@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/monthRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior=".calendar.month.MonthBehavior"
+            app:layout_anchor="@id/dayLayout"
+            />
+
+        <include layout="@layout/day_bottom_sheet"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icons8_plus"
+            android:layout_margin="10dp"
+            app:layout_behavior=".ui.FabBehavior"
+            app:layout_anchor="@id/dayLayout"
+            app:layout_anchorGravity="end|bottom"
+            />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <Button
+        android:id="@+id/goTodayButton"
+        android:layout_width="72dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="24dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/round_rect_white_button"
+        android:text="오늘"/>
+
+</RelativeLayout>
