@@ -1,5 +1,6 @@
 package com.wonpyohong.android.cleanking.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PagerSnapHelper
@@ -11,6 +12,7 @@ import com.wonpyohong.android.cleanking.calendar.day.DayAdapter
 import com.wonpyohong.android.cleanking.calendar.month.MIN_DATE
 import com.wonpyohong.android.cleanking.calendar.month.MonthAdapter
 import com.wonpyohong.android.cleanking.support.RxAnyEvent
+import com.wonpyohong.android.cleanking.ui.add.AddDumpActivity
 import kotlinx.android.synthetic.main.day_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_calendar.*
 import org.threeten.bp.LocalDate
@@ -44,8 +46,7 @@ class CalendarFragment : BaseFragment() {
         goTodayButton.setOnClickListener { goToday() }
 
         fab.setOnClickListener {
-            val dialog = AddDumpDialog()
-            dialog.show(activity!!.supportFragmentManager!!, "addDump")
+            startActivity(Intent(context!!, AddDumpActivity::class.java))
         }
     }
 
