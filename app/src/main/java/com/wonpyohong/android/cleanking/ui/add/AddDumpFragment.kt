@@ -1,13 +1,11 @@
 package com.wonpyohong.android.cleanking.ui.add
 
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.*
 import com.cunoraz.tagview.Tag
-import com.homedev.android.dietapp.room.exercise.Dump
+import com.wonpyohong.android.cleanking.room.dump.Dump
 import com.homedev.android.dietapp.room.exercise.DumpDatabase
 import com.wonpyohong.android.cleanking.R
 import com.wonpyohong.android.cleanking.base.BaseFragment

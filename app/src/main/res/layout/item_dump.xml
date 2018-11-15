@@ -1,35 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/dumpLayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <data>
+        <variable
+            name="dump"
+            type="com.wonpyohong.android.cleanking.room.dump.Dump" />
+        <variable
+            name="dumpViewHolder"
+            type="com.wonpyohong.android.cleanking.calendar.day.DumpAdapter.DumpViewHolder" />
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/dumpLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        app:cardBackgroundColor="@{dumpViewHolder.selected ? @color/gray_cccccc : @color/white}">
 
-        <TextView
-            android:id="@+id/category"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:textSize="16sp"
-            android:layout_marginEnd="15dp"
-            tools:text="버리기"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
 
-        <TextView
-            android:id="@+id/dumpName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:layout_alignParentEnd="true"
-            tools:text="쓰레기"/>
+            <TextView
+                android:id="@+id/category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
+                android:layout_marginEnd="15dp"
+                android:text="@{dump.category}"
+                tools:text="집안일"/>
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/dumpName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_alignParentEnd="true"
+                android:text="@{dump.dumpName}"
+                tools:text="설거지"/>
 
-</android.support.v7.widget.CardView>
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</layout>

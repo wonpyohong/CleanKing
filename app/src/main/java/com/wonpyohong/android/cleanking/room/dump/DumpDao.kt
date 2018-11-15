@@ -1,6 +1,7 @@
 package com.homedev.android.dietapp.room.exercise
 
 import android.arch.persistence.room.*
+import com.wonpyohong.android.cleanking.room.dump.Dump
 import io.reactivex.Flowable
 
 @Dao

@@ -1,31 +1,31 @@
 package com.wonpyohong.android.cleanking.calendar.day
 
 import android.content.Context
-import android.graphics.Color
+import android.databinding.DataBindingUtil
+import android.databinding.ObservableBoolean
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import com.homedev.android.dietapp.room.exercise.Dump
+import com.wonpyohong.android.cleanking.room.dump.Dump
 import com.wonpyohong.android.cleanking.R
+import com.wonpyohong.android.cleanking.databinding.ItemDumpBinding
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperViewHolder
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_dump.*
 import java.util.*
 
 class DumpAdapter(private val context: Context, val dumpList: List<Dump>):
-        RecyclerView.Adapter<DumpAdapter.ExerciseTodoViewHolder>(),
+        RecyclerView.Adapter<DumpAdapter.DumpViewHolder>(),
         ItemTouchHelperAdapter {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseTodoViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DumpViewHolder {
         val itemView = LayoutInflater.from(context).inflate(R.layout.item_dump, parent, false)
-        return ExerciseTodoViewHolder(itemView)
+        return DumpViewHolder(itemView)
     }
 
     override fun getItemCount() = dumpList.size
 
-    override fun onBindViewHolder(holder: ExerciseTodoViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DumpViewHolder, position: Int) {
         holder.bind(dumpList[position])
     }
 
@@ -47,19 +47,23 @@ class DumpAdapter(private val context: Context, val dumpList: List<Dump>):
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    inner class ExerciseTodoViewHolder(override val containerView: View) :
+    inner class DumpViewHolder(override val containerView: View) :
             RecyclerView.ViewHolder(containerView), LayoutContainer, ItemTouchHelperViewHolder {
-        fun bind(exerciseTodo: Dump) {
-            category.text = exerciseTodo.category
-            dumpName.text = exerciseTodo.dumpName
+
+        var selected = ObservableBoolean(false)
+
+        fun bind(dump: Dump) {
+            val viewBinding = DataBindingUtil.bind<ItemDumpBinding>(containerView)
+            viewBinding?.dump = dump
+            viewBinding?.dumpViewHolder = this
         }
 
         override fun onItemSelected() {
-            dumpLayout.setCardBackgroundColor(Color.LTGRAY)
+            selected.set(true)
         }
 
         override fun onItemCleared() {
-            dumpLayout.setCardBackgroundColor(Color.WHITE)
+            selected.set(false)
         }
     }
 }

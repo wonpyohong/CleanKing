@@ -1,9 +1,7 @@
-package com.homedev.android.dietapp.room.exercise
+package com.wonpyohong.android.cleanking.room.dump
 
-import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
-import org.threeten.bp.LocalTime
 
 @Entity(tableName = "dump")
 class Dump(

@@ -4,6 +4,7 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import com.wonpyohong.android.cleanking.CleanApplication.Companion.applicationContext
+import com.wonpyohong.android.cleanking.room.dump.Dump
 
 @Database(entities = arrayOf(Dump::class), version = 1)
 abstract class DumpDatabase: RoomDatabase() {
