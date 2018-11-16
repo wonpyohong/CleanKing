@@ -1,10 +1,10 @@
 package com.wonpyohong.android.cleanking.ui.add
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.*
-import com.cunoraz.tagview.Tag
 import com.wonpyohong.android.cleanking.room.dump.Dump
 import com.homedev.android.dietapp.room.exercise.DumpDatabase
 import com.wonpyohong.android.cleanking.R
@@ -27,15 +27,17 @@ class AddDumpFragment: BaseFragment() {
     }
 
     private fun initCategoryTag() {
-        val tagList = CategoryEnum.values().map {
-            val tag = Tag(it.title)
-            tag.layoutColor = it.color
-            tag
-        }
-
+        val tagList = CategoryEnum.createTagList()
         categoryTagView.addTags(tagList)
         categoryTagView.setOnTagClickListener { tag, position ->
-            selectedCategory = tag.text
+            categoryTagView.removeAll()
+
+            val theTag = tagList.find { it == tag }!!
+            selectedCategory = theTag.text
+            theTag.layoutColor = CategoryEnum.values()[position].color
+            theTag.tagTextColor = Color.WHITE
+
+            categoryTagView.addTags(tagList)
         }
     }
 
