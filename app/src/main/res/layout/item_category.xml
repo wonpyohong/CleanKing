@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="categoryType"
-            type="com.wonpyohong.android.cleanking.type.CategoryType" />
+            name="category"
+            type="com.wonpyohong.android.cleanking.room.category.Category" />
     </data>
 
     <LinearLayout
@@ -28,7 +28,7 @@
             android:layout_marginEnd="3dp"
             android:textSize="14sp"
             android:textColor="#FF0000"
-            android:text="@{categoryType.title}"
+            android:text="@{category.categoryName}"
             tools:text="집안일">
         </TextView>
 

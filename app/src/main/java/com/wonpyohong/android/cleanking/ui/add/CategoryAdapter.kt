@@ -1,28 +1,32 @@
 package com.wonpyohong.android.cleanking.ui.add
 
-import android.content.Context
-import android.databinding.DataBindingUtil
 import android.databinding.ObservableBoolean
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import com.wonpyohong.android.cleanking.R
+import com.android.databinding.library.baseAdapters.BR
 import com.wonpyohong.android.cleanking.databinding.ItemCategoryBinding
+import com.wonpyohong.android.cleanking.room.category.Category
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperViewHolder
-import com.wonpyohong.android.cleanking.type.CategoryType
-import kotlinx.android.extensions.LayoutContainer
 import java.util.*
 
-class CategoryAdapter(private val context: Context):
+
+class CategoryAdapter:
         RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>(), ItemTouchHelperAdapter {
 
-    private val categoryList = CategoryType.values().toList()
+    lateinit var categoryList: List<Category>
+
+    fun setItem(categoryList: List<Category>?) {
+        if (categoryList != null) {
+            this.categoryList = categoryList
+            notifyDataSetChanged()
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val itemView = LayoutInflater.from(context).inflate(R.layout.item_category, parent, false)
-        return CategoryViewHolder(itemView)
+        val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context))
+        return CategoryViewHolder(binding)
     }
 
     override fun getItemCount() = categoryList.size
@@ -49,14 +53,13 @@ class CategoryAdapter(private val context: Context):
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    inner class CategoryViewHolder(override val containerView: View) :
-            RecyclerView.ViewHolder(containerView), LayoutContainer, ItemTouchHelperViewHolder {
+    inner class CategoryViewHolder(val binding: ItemCategoryBinding) :
+            RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
 
         var selected = ObservableBoolean(false)
 
-        fun bind(categoryType: CategoryType) {
-            val viewBinding = DataBindingUtil.bind<ItemCategoryBinding>(containerView)
-            viewBinding?.categoryType = categoryType
+        fun bind(category: Category) {
+            binding.setVariable(BR.category, category)
         }
 
         override fun onItemSelected() {
@@ -65,10 +68,6 @@ class CategoryAdapter(private val context: Context):
 
         override fun onItemCleared() {
             selected.set(false)
-        }
-
-        fun onClick(containerView: View) {
-
         }
     }
 }

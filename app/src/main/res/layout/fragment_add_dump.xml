@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tagview="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools">
+    <data>
+        <import type="android.databinding.ObservableArrayList" />
+        <import type="com.wonpyohong.android.cleanking.room.category.Category" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/categoryRecyclerView"
+        <variable
+            name="categoryList"
+            type="ObservableArrayList&lt;Category&gt;" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/dumpName"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:hint="정리할 물건 이름"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/categoryRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            bind:item="@{categoryList}"/>
 
-    <EditText
-        android:id="@+id/reason"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:hint="이유"/>
-</LinearLayout>
+        <EditText
+            android:id="@+id/dumpName"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="정리할 물건 이름"/>
+
+        <EditText
+            android:id="@+id/reason"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="이유"/>
+    </LinearLayout>
+</layout>

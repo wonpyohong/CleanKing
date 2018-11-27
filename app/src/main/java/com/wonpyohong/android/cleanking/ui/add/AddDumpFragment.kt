@@ -1,9 +1,12 @@
 package com.wonpyohong.android.cleanking.ui.add
 
 import android.annotation.SuppressLint
-import android.graphics.Color
+import android.databinding.BindingAdapter
+import android.databinding.DataBindingUtil
+import android.databinding.ObservableArrayList
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
@@ -13,33 +16,49 @@ import com.wonpyohong.android.cleanking.R
 import com.wonpyohong.android.cleanking.base.BaseFragment
 import com.wonpyohong.android.cleanking.support.RxDayDataSetChangedEvent
 import com.wonpyohong.android.cleanking.support.recyclerview.DragHelperCallback
-import com.wonpyohong.android.cleanking.type.CategoryType
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_add_dump.*
-import kotlinx.android.synthetic.main.item_day.*
 import org.threeten.bp.LocalDate
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
+import com.homedev.android.dietapp.room.exercise.CategoryDatabase
+import com.wonpyohong.android.cleanking.databinding.FragmentAddDumpBinding
+import com.wonpyohong.android.cleanking.room.category.Category
+import kotlinx.android.synthetic.main.item_dump.*
 
-
+@BindingAdapter("bind:item")
+fun bindItem(recyclerView: RecyclerView, categoryList: ObservableArrayList<Category>) {
+    val adapter = recyclerView.adapter as CategoryAdapter
+    adapter.setItem(categoryList)
+}
 
 class AddDumpFragment: BaseFragment() {
     override var fragmentLayoutId = R.layout.fragment_add_dump
 
     var selectedCategory: String? = null
 
+    lateinit var binding: FragmentAddDumpBinding
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initCategoryTag()
+        binding = DataBindingUtil.bind(view)!!
+        initCategoryTag(view)
     }
 
-    private fun initCategoryTag() {
-        val categoryAdapter = CategoryAdapter(context!!)
-        categoryRecyclerView.adapter = categoryAdapter
-        categoryRecyclerView.layoutManager = ChipsLayoutManager.newBuilder(context!!)
-            .build()
+    private fun initCategoryTag(view: View) {
+        val categoryAdapter = CategoryAdapter()
+        binding?.categoryRecyclerView?.adapter = categoryAdapter
 
-        categoryRecyclerView.addItemDecoration(
+        val categoryList = ObservableArrayList<Category>()
+        binding?.categoryList = categoryList
+
+        CategoryDatabase.getInstance().getCategoryDao().getAllCategoryList().subscribe {
+            categoryList.clear()
+            categoryList.addAll(it)
+        }
+
+        binding?.categoryRecyclerView?.layoutManager = ChipsLayoutManager.newBuilder(context!!).build()
+        binding?.categoryRecyclerView?.addItemDecoration(
             SpacingItemDecoration(20, 20)
         )
 
@@ -69,7 +88,7 @@ class AddDumpFragment: BaseFragment() {
             return true
         }
 
-        val dump = Dump(0, LocalDate.now().toString(), selectedCategory!!, dumpName.text.toString(), reason.text.toString())
+        val dump = Dump(0, LocalDate.now().toString(), selectedCategory!!, binding.dumpName.text.toString(), reason.text.toString())
 
         Single.just(1)
             .subscribeOn(Schedulers.io())
