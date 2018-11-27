@@ -22,10 +22,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_add_dump.*
 import org.threeten.bp.LocalDate
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
-import com.homedev.android.dietapp.room.exercise.CategoryDatabase
 import com.wonpyohong.android.cleanking.databinding.FragmentAddDumpBinding
 import com.wonpyohong.android.cleanking.room.category.Category
-import kotlinx.android.synthetic.main.item_dump.*
 
 @BindingAdapter("bind:item")
 fun bindItem(recyclerView: RecyclerView, categoryList: ObservableArrayList<Category>) {
@@ -47,18 +45,18 @@ class AddDumpFragment: BaseFragment() {
 
     private fun initCategoryTag(view: View) {
         val categoryAdapter = CategoryAdapter()
-        binding?.categoryRecyclerView?.adapter = categoryAdapter
+        binding.categoryRecyclerView.adapter = categoryAdapter
 
         val categoryList = ObservableArrayList<Category>()
-        binding?.categoryList = categoryList
+        binding.categoryList = categoryList
 
-        CategoryDatabase.getInstance().getCategoryDao().getAllCategoryList().subscribe {
+        DumpDatabase.getInstance().getCategoryDao().getAllCategoryList().subscribe {
             categoryList.clear()
             categoryList.addAll(it)
         }
 
-        binding?.categoryRecyclerView?.layoutManager = ChipsLayoutManager.newBuilder(context!!).build()
-        binding?.categoryRecyclerView?.addItemDecoration(
+        binding.categoryRecyclerView.layoutManager = ChipsLayoutManager.newBuilder(context!!).build()
+        binding.categoryRecyclerView.addItemDecoration(
             SpacingItemDecoration(20, 20)
         )
 
