@@ -4,18 +4,25 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.wonpyohong.android.cleanking.room.dump.Dump
 import com.homedev.android.dietapp.room.exercise.DumpDatabase
 import com.wonpyohong.android.cleanking.R
 import com.wonpyohong.android.cleanking.base.BaseFragment
 import com.wonpyohong.android.cleanking.support.RxDayDataSetChangedEvent
-import com.wonpyohong.android.cleanking.type.CategoryEnum
+import com.wonpyohong.android.cleanking.support.recyclerview.DragHelperCallback
+import com.wonpyohong.android.cleanking.type.CategoryType
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_add_dump.*
+import kotlinx.android.synthetic.main.item_day.*
 import org.threeten.bp.LocalDate
+import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
+
+
 
 class AddDumpFragment: BaseFragment() {
     override var fragmentLayoutId = R.layout.fragment_add_dump
@@ -27,18 +34,17 @@ class AddDumpFragment: BaseFragment() {
     }
 
     private fun initCategoryTag() {
-        val tagList = CategoryEnum.createTagList()
-        categoryTagView.addTags(tagList)
-        categoryTagView.setOnTagClickListener { tag, position ->
-            categoryTagView.removeAll()
+        val categoryAdapter = CategoryAdapter(context!!)
+        categoryRecyclerView.adapter = categoryAdapter
+        categoryRecyclerView.layoutManager = ChipsLayoutManager.newBuilder(context!!)
+            .build()
 
-            val theTag = tagList.find { it == tag }!!
-            selectedCategory = theTag.text
-            theTag.layoutColor = CategoryEnum.values()[position].color
-            theTag.tagTextColor = Color.WHITE
+        categoryRecyclerView.addItemDecoration(
+            SpacingItemDecoration(20, 20)
+        )
 
-            categoryTagView.addTags(tagList)
-        }
+        val touchHelper = ItemTouchHelper(DragHelperCallback(categoryAdapter))
+        touchHelper.attachToRecyclerView(categoryRecyclerView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {

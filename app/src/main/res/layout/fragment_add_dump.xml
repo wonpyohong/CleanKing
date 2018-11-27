@@ -7,8 +7,8 @@
     android:padding="10dp"
     android:orientation="vertical">
 
-    <com.cunoraz.tagview.TagView
-        android:id="@+id/categoryTagView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/categoryRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

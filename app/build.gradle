@@ -73,5 +73,5 @@ dependencies {
 
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
-    implementation 'com.github.Cutta:TagView:1.3'
+    implementation 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
 }
