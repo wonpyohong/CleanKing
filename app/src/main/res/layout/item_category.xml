@@ -22,7 +22,8 @@
             android:paddingRight="10dp"
             android:gravity="center_vertical"
             android:layout_margin="10dp"
-            android:background="@{category.isSelected ? @drawable/selected_category_background : @drawable/default_category_background}"
+            tools:background="@drawable/category_background_default"
+            android:background="@{category.isSelected ? @drawable/category_background_selected : @drawable/category_background_default}"
             android:onClick="@{(view) -> categoryAdapter.onCategoryClicked(category)}"
             android:orientation="horizontal">
 
@@ -32,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="3dp"
             android:textSize="14sp"
-            android:textColor="@{category.isSelected ? @color/white : @color/red}"
+            android:textColor="@{category.isSelected ? @color/violet_5920e5 : @color/black_212121}"
             android:text="@{category.categoryName}"
             tools:text="집안일">
         </TextView>

@@ -10,6 +10,11 @@
 
     <color name="white">#FFFFFF</color>
     <color name="gray_cccccc">#CCCCCC</color>
+    <color name="gray_divider">#1E000000</color>
+    <color name="gray_595959">#595959</color>
+
+    <color name="black_212121">#212121</color>
 
     <color name="red">#FF0000</color>
+    <color name="violet_5920e5">#5920e5</color>
 </resources>

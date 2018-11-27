@@ -1,6 +1,8 @@
 package com.wonpyohong.android.cleanking.ui.add
 
+import android.databinding.Observable
 import android.databinding.ObservableBoolean
+import android.databinding.ObservableField
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +19,7 @@ class CategoryAdapter:
         RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>(), ItemTouchHelperAdapter {
 
     lateinit var categoryList: List<Category>
+    var selectedCategory: ObservableField<Category> = ObservableField()
 
     fun setItem(categoryList: List<Category>?) {
         if (categoryList != null) {
@@ -60,6 +63,7 @@ class CategoryAdapter:
             it.setSelectedFalse()
         }
         category.onClicked()
+        selectedCategory.set(category)
     }
 
     inner class CategoryViewHolder(val binding: ItemCategoryBinding) :

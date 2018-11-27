@@ -50,6 +50,7 @@ class AddDumpFragment: BaseFragment() {
 
         val categoryList = ObservableArrayList<Category>()
         binding.categoryList = categoryList
+        binding.categoryAdapter = categoryAdapter
 
         DumpDatabase.getInstance().getCategoryDao().getAllCategoryList().subscribe {
             categoryList.clear()
