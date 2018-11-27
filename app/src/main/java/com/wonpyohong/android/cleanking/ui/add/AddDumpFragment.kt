@@ -40,11 +40,12 @@ class AddDumpFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = DataBindingUtil.bind(view)!!
-        initCategoryTag(view)
+        initCategoryTag()
     }
 
-    private fun initCategoryTag(view: View) {
+    private fun initCategoryTag() {
         val categoryAdapter = CategoryAdapter()
+        categoryAdapter.setHasStableIds(true)
         binding.categoryRecyclerView.adapter = categoryAdapter
 
         val categoryList = ObservableArrayList<Category>()
