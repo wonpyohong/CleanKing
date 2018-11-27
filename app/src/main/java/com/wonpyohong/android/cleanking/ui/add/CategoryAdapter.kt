@@ -3,6 +3,7 @@ package com.wonpyohong.android.cleanking.ui.add
 import android.databinding.ObservableBoolean
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import com.android.databinding.library.baseAdapters.BR
 import com.wonpyohong.android.cleanking.databinding.ItemCategoryBinding
@@ -50,7 +51,13 @@ class CategoryAdapter:
     }
 
     override fun onItemDismiss(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    fun onCategoryClicked(category: Category) {
+        categoryList.forEach {
+            it.setSelectedFalse()
+        }
+        category.onClicked()
     }
 
     inner class CategoryViewHolder(val binding: ItemCategoryBinding) :
@@ -59,7 +66,8 @@ class CategoryAdapter:
         var selected = ObservableBoolean(false)
 
         fun bind(category: Category) {
-            binding.setVariable(BR.category, category)
+            binding.category = category
+            binding.categoryAdapter = this@CategoryAdapter
         }
 
         override fun onItemSelected() {

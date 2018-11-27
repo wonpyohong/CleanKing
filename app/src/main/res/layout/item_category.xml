@@ -7,9 +7,13 @@
         <variable
             name="category"
             type="com.wonpyohong.android.cleanking.room.category.Category" />
+        <variable
+            name="categoryAdapter"
+            type="com.wonpyohong.android.cleanking.ui.add.CategoryAdapter" />
     </data>
 
     <LinearLayout
+            android:id="@+id/rootLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="5dp"
@@ -18,7 +22,8 @@
             android:paddingRight="10dp"
             android:gravity="center_vertical"
             android:layout_margin="10dp"
-            android:background="@drawable/default_tag_background"
+            android:background="@{category.isSelected ? @drawable/selected_category_background : @drawable/default_category_background}"
+            android:onClick="@{(view) -> categoryAdapter.onCategoryClicked(category)}"
             android:orientation="horizontal">
 
         <TextView
@@ -27,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="3dp"
             android:textSize="14sp"
-            android:textColor="#FF0000"
+            android:textColor="@{category.isSelected ? @color/white : @color/red}"
             android:text="@{category.categoryName}"
             tools:text="집안일">
         </TextView>
