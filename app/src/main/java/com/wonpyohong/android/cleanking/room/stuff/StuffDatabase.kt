@@ -42,14 +42,15 @@ object RoomDbCallback: RoomDatabase.Callback() {
 
 private fun addBaseData() {
     Executors.newSingleThreadScheduledExecutor().execute {
-        val categoryDao = StuffDatabase.getInstance().getCategoryDao()
-        categoryDao.insert(Category(0, "버리기"))
-        categoryDao.insert(Category(0, "집안일"))
-        categoryDao.insert(Category(0, "제자리 이동"))
-        categoryDao.insert(Category(0, "쓰레기"))
-        categoryDao.insert(Category(0, "청소"))
-        categoryDao.insert(Category(0, "정리"))
-        categoryDao.insert(Category(0, "보관"))
+        with (StuffDatabase.getInstance().getCategoryDao()) {
+            insert(Category(0, "버리기"))
+            insert(Category(0, "집안일"))
+            insert(Category(0, "제자리 이동"))
+            insert(Category(0, "쓰레기"))
+            insert(Category(0, "청소"))
+            insert(Category(0, "정리"))
+            insert(Category(0, "보관"))
+        }
     }
 }
 

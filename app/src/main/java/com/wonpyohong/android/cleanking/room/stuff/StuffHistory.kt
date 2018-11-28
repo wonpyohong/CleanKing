@@ -10,4 +10,5 @@ class StuffHistory(
         @PrimaryKey(autoGenerate = true)
         val id: Int,
         val date: String,                           // 일단 String으로 하자
-        val stuffId: Int)
+        val categoryName: String,
+        val stuffName: String)

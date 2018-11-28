@@ -8,6 +8,9 @@ interface StuffDao {
     @Query("SELECT * FROM stuff")
     fun getStuffList(): Flowable<List<Stuff>>
 
+    @Query("SELECT * FROM stuff WHERE categoryId=:categoryId")
+    fun getStuffList(categoryId: Int): Flowable<List<Stuff>>
+
     @Query("DELETE FROM stuff")
     fun clearAll()
 

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3909eb2fbc9deedbed030e55870893f3",
+    "identityHash": "9ba00d4f7b04fb72744b8565bf1a4bb2",
     "entities": [
       {
         "tableName": "category",
@@ -64,7 +64,7 @@
       },
       {
         "tableName": "stuff_history",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `stuffId` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `categoryName` TEXT NOT NULL, `stuffName` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -79,9 +79,15 @@
             "notNull": true
           },
           {
-            "fieldPath": "stuffId",
-            "columnName": "stuffId",
-            "affinity": "INTEGER",
+            "fieldPath": "categoryName",
+            "columnName": "categoryName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stuffName",
+            "columnName": "stuffName",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -97,7 +103,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3909eb2fbc9deedbed030e55870893f3\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9ba00d4f7b04fb72744b8565bf1a4bb2\")"
     ]
   }
 }

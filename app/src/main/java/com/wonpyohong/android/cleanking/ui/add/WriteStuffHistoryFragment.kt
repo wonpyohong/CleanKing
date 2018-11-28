@@ -47,8 +47,6 @@ fun bindStuffItem(recyclerView: RecyclerView, stuffList: ObservableArrayList<Stu
 class WriteStuffHistoryFragment: BaseFragment() {
     override var fragmentLayoutId = R.layout.fragment_write_stuff_history
 
-    var selectedStuff: Stuff? = null
-
     lateinit var binding: FragmentWriteStuffHistoryBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,11 +77,13 @@ class WriteStuffHistoryFragment: BaseFragment() {
         val stuffList = ObservableArrayList<Stuff>()
         binding.stuffList = stuffList
         binding.stuffAdapter = stuffAdapter
+        binding.categoryAdapter?.selectedCategory?.addOnPropertyChanged {selectedObservableCategory ->
+            StuffDatabase.getInstance().getStuffDao().getStuffList(selectedObservableCategory.get()!!.categoryId)
+                .subscribe {list ->
+                    stuffList.clear()
+                    stuffList.addAll(list)
+                } }
 
-        StuffDatabase.getInstance().getStuffDao().getStuffList().subscribe {
-            stuffList.clear()
-            stuffList.addAll(it)
-        }
     }
 
     private fun initRecyclerViewCommon(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>) {
@@ -113,7 +113,7 @@ class WriteStuffHistoryFragment: BaseFragment() {
     }
 
     private fun addDump(): Boolean {
-        if (selectedStuff == null) {
+        if (binding.stuffAdapter?.selectedStuff == null) {
             AlertDialog.Builder(context!!)
                 .setMessage("카테고리를 선택하셔야 합니다")
                 .show()
@@ -121,7 +121,9 @@ class WriteStuffHistoryFragment: BaseFragment() {
             return true
         }
 
-        val stuff = StuffHistory(0, LocalDate.now().toString(), selectedStuff!!.id)
+        val stuff = StuffHistory(0, LocalDate.now().toString(),
+            binding.categoryAdapter?.selectedCategory?.get()!!.categoryName,
+            binding.stuffAdapter?.selectedStuff?.get()!!.stuffName)
 
         Single.just(1)
             .subscribeOn(Schedulers.io())
@@ -158,4 +160,13 @@ class WriteStuffHistoryFragment: BaseFragment() {
                 .setMessage("카테고리를 선택하셔야 합니다")
                 .show()
     }
+
+    fun <T: android.databinding.Observable> T.addOnPropertyChanged(callback: (T) -> Unit) =
+        addOnPropertyChangedCallback(
+            object: android.databinding.Observable.OnPropertyChangedCallback() {
+                override fun onPropertyChanged(
+                    observable: android.databinding.Observable?, i: Int) =
+                    callback(observable as T)
+            })
+
 }

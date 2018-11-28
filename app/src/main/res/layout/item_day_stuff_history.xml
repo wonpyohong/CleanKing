@@ -32,7 +32,7 @@
                 android:layout_marginStart="10dp"
                 android:textSize="16sp"
                 android:layout_marginEnd="15dp"
-                android:text="@{stuffHistory.date, default=집안일}"/>
+                android:text="@{stuffHistory.categoryName, default=집안일}"/>
 
             <TextView
                 android:id="@+id/stuffName"
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_alignParentEnd="true"
-                android:text="@{stuffHistory.stuffId, default=설거지}"/>
+                android:text="@{stuffHistory.stuffName, default=설거지}"/>
 
         </RelativeLayout>
 
