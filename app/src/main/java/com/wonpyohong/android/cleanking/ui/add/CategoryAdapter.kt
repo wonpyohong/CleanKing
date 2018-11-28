@@ -1,15 +1,12 @@
 package com.wonpyohong.android.cleanking.ui.add
 
-import android.databinding.Observable
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import com.android.databinding.library.baseAdapters.BR
 import com.wonpyohong.android.cleanking.databinding.ItemCategoryBinding
-import com.wonpyohong.android.cleanking.room.category.Category
+import com.wonpyohong.android.cleanking.room.stuff.Category
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperViewHolder
 import java.util.*

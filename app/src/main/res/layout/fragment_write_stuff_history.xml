@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:bind="http://schemas.android.com/tools">
     <data>
         <import type="android.databinding.ObservableArrayList" />
-        <import type="com.wonpyohong.android.cleanking.room.category.Category" />
+        <import type="com.wonpyohong.android.cleanking.room.stuff.Category" />
+        <import type="com.wonpyohong.android.cleanking.room.stuff.Stuff" />
 
         <variable
             name="categoryList"
@@ -12,6 +13,14 @@
         <variable
             name="categoryAdapter"
             type="com.wonpyohong.android.cleanking.ui.add.CategoryAdapter" />
+
+        <variable
+            name="stuffList"
+            type="ObservableArrayList&lt;Stuff&gt;" />
+
+        <variable
+            name="stuffAdapter"
+            type="com.wonpyohong.android.cleanking.ui.add.StuffAdapter" />
     </data>
 
     <LinearLayout
@@ -30,26 +39,23 @@
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:padding="8dp"
-            tools:item="@{categoryList}"/>
+            bind:categoryItem="@{categoryList}"/>
 
         <View style="@style/divider" />
 
         <TextView
             android:id="@+id/selectedCategory"
             style="@style/title"
-            tools:text="버리기"
-            android:text='@{categoryAdapter.selectedCategory == null ? "" : categoryAdapter.selectedCategory.CategoryName}'/>
+            android:text='@{categoryAdapter.selectedCategory == null ? "" : categoryAdapter.selectedCategory.CategoryName, default=버리기}'
+            />
 
-        <EditText
-            android:id="@+id/dumpName"
-            android:layout_width="300dp"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/stuffRecyclerView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="정리할 물건 이름"/>
-
-        <EditText
-            android:id="@+id/reason"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:hint="이유"/>
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:padding="8dp"
+            bind:stuffItem="@{stuffList}"/>
     </LinearLayout>
 </layout>

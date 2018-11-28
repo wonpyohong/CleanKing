@@ -1,9 +1,7 @@
-package com.homedev.android.dietapp.room.exercise
+package com.wonpyohong.android.cleanking.room.stuff
 
 import android.arch.persistence.room.*
-import com.wonpyohong.android.cleanking.room.category.Category
 import io.reactivex.Flowable
-import io.reactivex.Single
 
 @Dao
 interface CategoryDao {

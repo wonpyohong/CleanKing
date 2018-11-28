@@ -7,36 +7,36 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.wonpyohong.android.cleanking.room.dump.Dump
 import com.wonpyohong.android.cleanking.R
-import com.wonpyohong.android.cleanking.databinding.ItemDumpBinding
+import com.wonpyohong.android.cleanking.databinding.ItemDayStuffHistoryBinding
+import com.wonpyohong.android.cleanking.room.stuff.StuffHistory
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperViewHolder
 import kotlinx.android.extensions.LayoutContainer
 import java.util.*
 
-class DumpAdapter(private val context: Context, val dumpList: List<Dump>):
-        RecyclerView.Adapter<DumpAdapter.DumpViewHolder>(),
+class DayStuffHistoryAdapter(private val context: Context, val stuffHistoryList: List<StuffHistory>):
+        RecyclerView.Adapter<DayStuffHistoryAdapter.DumpViewHolder>(),
         ItemTouchHelperAdapter {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DumpViewHolder {
-        val itemView = LayoutInflater.from(context).inflate(R.layout.item_dump, parent, false)
+        val itemView = LayoutInflater.from(context).inflate(R.layout.item_day_stuff_history, parent, false)
         return DumpViewHolder(itemView)
     }
 
-    override fun getItemCount() = dumpList.size
+    override fun getItemCount() = stuffHistoryList.size
 
     override fun onBindViewHolder(holder: DumpViewHolder, position: Int) {
-        holder.bind(dumpList[position])
+        holder.bind(stuffHistoryList[position])
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
-                Collections.swap(dumpList, i, i + 1)
+                Collections.swap(stuffHistoryList, i, i + 1)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(dumpList, i, i - 1)
+                Collections.swap(stuffHistoryList, i, i - 1)
             }
         }
         notifyItemMoved(fromPosition, toPosition)
@@ -52,9 +52,9 @@ class DumpAdapter(private val context: Context, val dumpList: List<Dump>):
 
         var selected = ObservableBoolean(false)
 
-        fun bind(dump: Dump) {
-            val viewBinding = DataBindingUtil.bind<ItemDumpBinding>(containerView)
-            viewBinding?.dump = dump
+        fun bind(stuffHistory: StuffHistory) {
+            val viewBinding = DataBindingUtil.bind<ItemDayStuffHistoryBinding>(containerView)
+            viewBinding?.stuffHistory = stuffHistory
             viewBinding?.dumpViewHolder = this
         }
 

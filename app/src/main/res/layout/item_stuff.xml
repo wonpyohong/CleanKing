@@ -5,11 +5,11 @@
 
     <data>
         <variable
-            name="category"
-            type="com.wonpyohong.android.cleanking.room.stuff.Category" />
+            name="stuff"
+            type="com.wonpyohong.android.cleanking.room.stuff.Stuff" />
         <variable
-            name="categoryAdapter"
-            type="com.wonpyohong.android.cleanking.ui.add.CategoryAdapter" />
+            name="stuffAdapter"
+            type="com.wonpyohong.android.cleanking.ui.add.StuffAdapter" />
     </data>
 
     <LinearLayout
@@ -22,8 +22,8 @@
             android:paddingRight="10dp"
             android:gravity="center_vertical"
             android:layout_margin="10dp"
-            android:background="@{category.isSelected ? @drawable/category_background_selected : @drawable/category_background_default, default=@drawable/category_background_default}"
-            android:onClick="@{(view) -> categoryAdapter.onCategoryClicked(category)}"
+            android:background="@{stuff.isSelected ? @drawable/category_background_selected : @drawable/category_background_default, default=@drawable/category_background_default}"
+            android:onClick="@{(view) -> stuffAdapter.onStuffClicked(stuff)}"
             android:orientation="horizontal">
 
         <TextView
@@ -32,8 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="3dp"
             android:textSize="14sp"
-            android:textColor="@{category.isSelected ? @color/violet_5920e5 : @color/black_212121}"
-            android:text="@{category.categoryName, default=버리기}">
+            android:textColor="@{stuff.isSelected ? @color/violet_5920e5 : @color/black_212121}"
+            android:text="@{stuff.stuffName, default=기타}">
         </TextView>
 
         <ImageView

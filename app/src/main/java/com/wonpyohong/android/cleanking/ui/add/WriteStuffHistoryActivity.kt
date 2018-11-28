@@ -5,7 +5,7 @@ import com.wonpyohong.android.cleanking.R
 import com.wonpyohong.android.cleanking.base.BaseActivity
 import com.wonpyohong.android.cleanking.ui.CalendarFragment
 
-class AddDumpActivity: BaseActivity() {
+class WriteStuffHistoryActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_dump)

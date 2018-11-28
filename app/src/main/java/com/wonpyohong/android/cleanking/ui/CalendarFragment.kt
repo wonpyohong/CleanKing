@@ -12,7 +12,7 @@ import com.wonpyohong.android.cleanking.calendar.day.DayAdapter
 import com.wonpyohong.android.cleanking.calendar.month.MIN_DATE
 import com.wonpyohong.android.cleanking.calendar.month.MonthAdapter
 import com.wonpyohong.android.cleanking.support.RxAnyEvent
-import com.wonpyohong.android.cleanking.ui.add.AddDumpActivity
+import com.wonpyohong.android.cleanking.ui.add.WriteStuffHistoryActivity
 import kotlinx.android.synthetic.main.day_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_calendar.*
 import org.threeten.bp.LocalDate
@@ -46,7 +46,7 @@ class CalendarFragment : BaseFragment() {
         goTodayButton.setOnClickListener { goToday() }
 
         fab.setOnClickListener {
-            startActivity(Intent(context!!, AddDumpActivity::class.java))
+            startActivity(Intent(context!!, WriteStuffHistoryActivity::class.java))
         }
     }
 

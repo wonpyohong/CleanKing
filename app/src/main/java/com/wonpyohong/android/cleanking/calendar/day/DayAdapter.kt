@@ -7,10 +7,10 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.homedev.android.dietapp.room.exercise.DumpDatabase
 import com.wonpyohong.android.cleanking.R
 import com.wonpyohong.android.cleanking.calendar.month.MAX_DATE
 import com.wonpyohong.android.cleanking.calendar.month.MIN_DATE
+import com.wonpyohong.android.cleanking.room.stuff.StuffDatabase
 import com.wonpyohong.android.cleanking.support.RxDayDataSetChangedEvent
 import com.wonpyohong.android.cleanking.support.recyclerview.DragHelperCallback
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -50,10 +50,11 @@ class DayAdapter(private val context: Context): RecyclerView.Adapter<DayAdapter.
             dumpRecyclerView.isNestedScrollingEnabled = false
             dumpRecyclerView.layoutManager = LinearLayoutManager(context)
 
-            compositeDisposable.add(DumpDatabase.getInstance().getDumpDao().getDumpList(date.toString())
+            compositeDisposable.add(
+                StuffDatabase.getInstance().getStuffHistoryDao().getDayStuffList(date.toString())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {dumpList ->
-                    val dumpAdapter = DumpAdapter(context, dumpList)
+                .subscribe {stuffList ->
+                    val dumpAdapter = DayStuffHistoryAdapter(context, stuffList)
                     dumpRecyclerView.adapter = dumpAdapter
 
                     val touchHelper = ItemTouchHelper(DragHelperCallback(dumpAdapter))

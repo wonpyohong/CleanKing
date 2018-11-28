@@ -5,11 +5,11 @@
 
     <data>
         <variable
-            name="dump"
-            type="com.wonpyohong.android.cleanking.room.dump.Dump" />
+            name="stuffHistory"
+            type="com.wonpyohong.android.cleanking.room.stuff.StuffHistory" />
         <variable
             name="dumpViewHolder"
-            type="com.wonpyohong.android.cleanking.calendar.day.DumpAdapter.DumpViewHolder" />
+            type="com.wonpyohong.android.cleanking.calendar.day.DayStuffHistoryAdapter.DumpViewHolder" />
     </data>
 
     <android.support.v7.widget.CardView
@@ -32,17 +32,15 @@
                 android:layout_marginStart="10dp"
                 android:textSize="16sp"
                 android:layout_marginEnd="15dp"
-                android:text="@{dump.category}"
-                tools:text="집안일"/>
+                android:text="@{stuffHistory.date, default=집안일}"/>
 
             <TextView
-                android:id="@+id/dumpName"
+                android:id="@+id/stuffName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_alignParentEnd="true"
-                android:text="@{dump.dumpName}"
-                tools:text="설거지"/>
+                android:text="@{stuffHistory.stuffId, default=설거지}"/>
 
         </RelativeLayout>
 

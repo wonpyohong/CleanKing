@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.add.AddDumpActivity"/>
+        <activity android:name=".ui.add.WriteStuffHistoryActivity"/>
     </application>
 
 </manifest>
