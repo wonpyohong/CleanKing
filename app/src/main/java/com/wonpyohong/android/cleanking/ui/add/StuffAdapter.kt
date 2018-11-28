@@ -70,7 +70,7 @@ class StuffAdapter:
 
         fun bind(stuff: Stuff) {
             binding.stuff = stuff
-//            binding.stuffAdapter = this@StuffAdapter
+            binding.stuffAdapter = this@StuffAdapter
         }
 
         override fun onItemSelected() {

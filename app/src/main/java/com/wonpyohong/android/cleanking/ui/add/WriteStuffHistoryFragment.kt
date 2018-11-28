@@ -24,6 +24,9 @@ import com.wonpyohong.android.cleanking.room.stuff.StuffHistory
 import com.wonpyohong.android.cleanking.support.RxDayDataSetChangedEvent
 import com.wonpyohong.android.cleanking.support.recyclerview.DragHelperCallback
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -41,7 +44,7 @@ fun bindStuffItem(recyclerView: RecyclerView, stuffList: ObservableArrayList<Stu
     adapter.setItem(stuffList)
 }
 
-class AddDumpFragment: BaseFragment() {
+class WriteStuffHistoryFragment: BaseFragment() {
     override var fragmentLayoutId = R.layout.fragment_write_stuff_history
 
     var selectedStuff: Stuff? = null
@@ -50,6 +53,7 @@ class AddDumpFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = DataBindingUtil.bind(view)!!
+        binding.writeStuffHistoryFragment = this
         initCategoryRecyclerView()
         initStuffRecyclerView()
     }
@@ -134,5 +138,24 @@ class AddDumpFragment: BaseFragment() {
             })
 
         return true
+    }
+
+    fun addStuff() {
+        binding.categoryAdapter?.selectedCategory?.get()?.let {
+            val newStuff = Stuff(
+                0,
+                it.categoryId,
+                binding.newStuffEditText.text.toString()
+            )
+
+            Completable.fromAction {
+                StuffDatabase.getInstance().getStuffDao().insert(newStuff)
+            }.subscribeOn(Schedulers.io())
+                .subscribe()
+
+        } ?:
+            AlertDialog.Builder(context!!)
+                .setMessage("카테고리를 선택하셔야 합니다")
+                .show()
     }
 }
