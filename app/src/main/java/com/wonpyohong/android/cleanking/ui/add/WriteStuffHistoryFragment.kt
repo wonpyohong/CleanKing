@@ -25,12 +25,10 @@ import com.wonpyohong.android.cleanking.support.RxDayDataSetChangedEvent
 import com.wonpyohong.android.cleanking.support.recyclerview.DragHelperCallback
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
 import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 
 @BindingAdapter("bind:categoryItem")
 fun bindCategoryItem(recyclerView: RecyclerView, categoryList: ObservableArrayList<Category>) {
@@ -100,19 +98,19 @@ class WriteStuffHistoryFragment: BaseFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
-        inflater.inflate(R.menu.add_dump, menu)
+        inflater.inflate(R.menu.write_history, menu)
     }
 
     @SuppressLint("CheckResult")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_add) {
-            return addDump()
+        if (item.itemId == R.id.menu_write_history) {
+            return writeHistory()
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    private fun addDump(): Boolean {
+    private fun writeHistory(): Boolean {
         if (binding.stuffAdapter?.selectedStuff == null) {
             AlertDialog.Builder(context!!)
                 .setMessage("카테고리를 선택하셔야 합니다")
@@ -121,7 +119,7 @@ class WriteStuffHistoryFragment: BaseFragment() {
             return true
         }
 
-        val stuff = StuffHistory(0, LocalDate.now().toString(),
+        val stuff = StuffHistory(0, LocalDateTime.now().minusHours(4).toLocalDate().toString(),
             binding.categoryAdapter?.selectedCategory?.get()!!.categoryName,
             binding.stuffAdapter?.selectedStuff?.get()!!.stuffName)
 
