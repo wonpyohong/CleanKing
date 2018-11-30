@@ -111,9 +111,17 @@ class WriteStuffHistoryFragment: BaseFragment() {
     }
 
     private fun writeHistory(): Boolean {
-        if (binding.stuffAdapter?.selectedStuff == null) {
+        if (binding.categoryAdapter?.selectedCategory?.get() == null) {
             AlertDialog.Builder(context!!)
                 .setMessage("카테고리를 선택하셔야 합니다")
+                .show()
+
+            return true
+        }
+
+        if (binding.stuffAdapter?.selectedStuff?.get() == null) {
+            AlertDialog.Builder(context!!)
+                .setMessage("세부 항목을 선택하셔야 합니다")
                 .show()
 
             return true
