@@ -2,25 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:bind="http://schemas.android.com/tools">
     <data>
-        <import type="android.databinding.ObservableArrayList" />
-        <import type="com.wonpyohong.android.cleanking.room.stuff.Category" />
-        <import type="com.wonpyohong.android.cleanking.room.stuff.Stuff" />
-
         <variable
-            name="categoryList"
-            type="ObservableArrayList&lt;Category&gt;" />
-
-        <variable
-            name="categoryAdapter"
-            type="com.wonpyohong.android.cleanking.ui.add.CategoryAdapter" />
-
-        <variable
-            name="stuffList"
-            type="ObservableArrayList&lt;Stuff&gt;" />
-
-        <variable
-            name="stuffAdapter"
-            type="com.wonpyohong.android.cleanking.ui.add.StuffAdapter" />
+            name="viewModel"
+            type="com.wonpyohong.android.cleanking.ui.add.WriteStuffHistoryViewModel" />
 
         <variable
             name="writeStuffHistoryFragment"
@@ -43,14 +27,14 @@
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:padding="8dp"
-            bind:categoryItem="@{categoryList}"/>
+            bind:categoryItem="@{viewModel.categoryList}"/>
 
         <View style="@style/divider" />
 
         <TextView
             android:id="@+id/selectedCategory"
             style="@style/title"
-            android:text='@{categoryAdapter.selectedCategory == null ? "" : categoryAdapter.selectedCategory.CategoryName, default=버리기}'
+            android:text='@{viewModel.selectedCategory == null ? "" : viewModel.selectedCategory.CategoryName, default=버리기}'
             />
 
         <android.support.v7.widget.RecyclerView
@@ -60,7 +44,7 @@
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:padding="8dp"
-            bind:stuffItem="@{stuffList}"/>
+            bind:stuffItem="@{viewModel.stuffList}"/>
 
         <EditText
             android:id="@+id/newStuffEditText"

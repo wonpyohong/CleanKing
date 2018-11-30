@@ -12,11 +12,10 @@ import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperView
 import java.util.*
 
 
-class CategoryAdapter:
+class CategoryAdapter(val viewModel: WriteStuffHistoryViewModel):
         RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>(), ItemTouchHelperAdapter {
 
     lateinit var categoryList: List<Category>
-    var selectedCategory: ObservableField<Category> = ObservableField()
 
     fun setItem(categoryList: List<Category>?) {
         if (categoryList != null) {
@@ -55,14 +54,6 @@ class CategoryAdapter:
     override fun onItemDismiss(position: Int) {
     }
 
-    fun onCategoryClicked(category: Category) {
-        categoryList.forEach {
-            it.setSelectedFalse()
-        }
-        category.onClicked()
-        selectedCategory.set(category)
-    }
-
     inner class CategoryViewHolder(val binding: ItemCategoryBinding) :
             RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
 
@@ -70,7 +61,7 @@ class CategoryAdapter:
 
         fun bind(category: Category) {
             binding.category = category
-            binding.categoryAdapter = this@CategoryAdapter
+            binding.viewModel = viewModel
         }
 
         override fun onItemSelected() {

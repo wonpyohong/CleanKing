@@ -32,15 +32,21 @@ import org.threeten.bp.LocalDateTime
 
 @BindingAdapter("bind:categoryItem")
 fun bindCategoryItem(recyclerView: RecyclerView, categoryList: ObservableArrayList<Category>) {
+    viewModel.categoryList = categoryList
+
     val adapter = recyclerView.adapter as CategoryAdapter
     adapter.setItem(categoryList)
 }
 
 @BindingAdapter("bind:stuffItem")
 fun bindStuffItem(recyclerView: RecyclerView, stuffList: ObservableArrayList<Stuff>) {
+    viewModel.stuffList = stuffList
+
     val adapter = recyclerView.adapter as StuffAdapter
     adapter.setItem(stuffList)
 }
+
+val viewModel = WriteStuffHistoryViewModel()
 
 class WriteStuffHistoryFragment: BaseFragment() {
     override var fragmentLayoutId = R.layout.fragment_write_stuff_history
@@ -49,37 +55,31 @@ class WriteStuffHistoryFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = DataBindingUtil.bind(view)!!
+        binding.viewModel = viewModel
         binding.writeStuffHistoryFragment = this
         initCategoryRecyclerView()
         initStuffRecyclerView()
     }
 
     private fun initCategoryRecyclerView() {
-        val categoryAdapter = CategoryAdapter()
+        val categoryAdapter = CategoryAdapter(viewModel)
         initRecyclerViewCommon(binding.categoryRecyclerView, categoryAdapter)
 
-        val categoryList = ObservableArrayList<Category>()
-        binding.categoryList = categoryList
-        binding.categoryAdapter = categoryAdapter
-
         StuffDatabase.getInstance().getCategoryDao().getAllCategoryList().subscribe {
-            categoryList.clear()
-            categoryList.addAll(it)
+            viewModel.categoryList.clear()
+            viewModel.categoryList.addAll(it)
         }
     }
 
     private fun initStuffRecyclerView() {
-        val stuffAdapter = StuffAdapter()
+        val stuffAdapter = StuffAdapter(viewModel)
         initRecyclerViewCommon(binding.stuffRecyclerView, stuffAdapter)
 
-        val stuffList = ObservableArrayList<Stuff>()
-        binding.stuffList = stuffList
-        binding.stuffAdapter = stuffAdapter
-        binding.categoryAdapter?.selectedCategory?.addOnPropertyChanged {selectedObservableCategory ->
+        viewModel.selectedCategory.addOnPropertyChanged {selectedObservableCategory ->
             StuffDatabase.getInstance().getStuffDao().getStuffList(selectedObservableCategory.get()!!.categoryId)
                 .subscribe {list ->
-                    stuffList.clear()
-                    stuffList.addAll(list)
+                    viewModel.stuffList.clear()
+                    viewModel.stuffList.addAll(list)
                 } }
 
     }
@@ -111,7 +111,7 @@ class WriteStuffHistoryFragment: BaseFragment() {
     }
 
     private fun writeHistory(): Boolean {
-        if (binding.categoryAdapter?.selectedCategory?.get() == null) {
+        if (viewModel.selectedCategory.get() == null) {
             AlertDialog.Builder(context!!)
                 .setMessage("카테고리를 선택하셔야 합니다")
                 .show()
@@ -119,7 +119,7 @@ class WriteStuffHistoryFragment: BaseFragment() {
             return true
         }
 
-        if (binding.stuffAdapter?.selectedStuff?.get() == null) {
+        if (viewModel.selectedStuff.get() == null) {
             AlertDialog.Builder(context!!)
                 .setMessage("세부 항목을 선택하셔야 합니다")
                 .show()
@@ -128,8 +128,8 @@ class WriteStuffHistoryFragment: BaseFragment() {
         }
 
         val stuff = StuffHistory(0, LocalDateTime.now().minusHours(4).toLocalDate().toString(),
-            binding.categoryAdapter?.selectedCategory?.get()!!.categoryName,
-            binding.stuffAdapter?.selectedStuff?.get()!!.stuffName)
+            viewModel.selectedCategory.get()!!.categoryName,
+            viewModel.selectedStuff.get()!!.stuffName)
 
         Single.just(1)
             .subscribeOn(Schedulers.io())
@@ -149,11 +149,11 @@ class WriteStuffHistoryFragment: BaseFragment() {
     }
 
     fun addStuff() {
-        binding.categoryAdapter?.selectedCategory?.get()?.let {
+        viewModel.selectedCategory.get()?.let {
             val newStuff = Stuff(
                 0,
                 it.categoryId,
-                binding.newStuffEditText.text.toString()
+                binding.newStuffEditText.text.toString()            // two-way binding이 필요할 듯
             )
 
             Completable.fromAction {
@@ -162,9 +162,9 @@ class WriteStuffHistoryFragment: BaseFragment() {
                 .subscribe()
 
         } ?:
-            AlertDialog.Builder(context!!)
-                .setMessage("카테고리를 선택하셔야 합니다")
-                .show()
+        AlertDialog.Builder(context!!)              // event 로 notify 해야 한다 Rx?
+            .setMessage("카테고리를 선택하셔야 합니다")
+            .show()
     }
 
     fun <T: android.databinding.Observable> T.addOnPropertyChanged(callback: (T) -> Unit) =

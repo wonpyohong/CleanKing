@@ -8,8 +8,8 @@
             name="category"
             type="com.wonpyohong.android.cleanking.room.stuff.Category" />
         <variable
-            name="categoryAdapter"
-            type="com.wonpyohong.android.cleanking.ui.add.CategoryAdapter" />
+            name="viewModel"
+            type="com.wonpyohong.android.cleanking.ui.add.WriteStuffHistoryViewModel" />
     </data>
 
     <LinearLayout
@@ -23,7 +23,7 @@
             android:gravity="center_vertical"
             android:layout_margin="10dp"
             android:background="@{category.isSelected ? @drawable/category_background_selected : @drawable/category_background_default, default=@drawable/category_background_default}"
-            android:onClick="@{(view) -> categoryAdapter.onCategoryClicked(category)}"
+            android:onClick="@{(view) -> viewModel.onCategoryClicked(category)}"
             android:orientation="horizontal">
 
         <TextView
