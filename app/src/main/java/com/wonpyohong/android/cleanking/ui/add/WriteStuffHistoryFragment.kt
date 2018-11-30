@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -33,17 +34,13 @@ import org.threeten.bp.LocalDateTime
 @BindingAdapter("bind:categoryItem")
 fun bindCategoryItem(recyclerView: RecyclerView, categoryList: ObservableArrayList<Category>) {
     viewModel.categoryList = categoryList
-
-    val adapter = recyclerView.adapter as CategoryAdapter
-    adapter.setItem(categoryList)
+    recyclerView.adapter.notifyDataSetChanged()
 }
 
 @BindingAdapter("bind:stuffItem")
 fun bindStuffItem(recyclerView: RecyclerView, stuffList: ObservableArrayList<Stuff>) {
     viewModel.stuffList = stuffList
-
-    val adapter = recyclerView.adapter as StuffAdapter
-    adapter.setItem(stuffList)
+    recyclerView.adapter.notifyDataSetChanged()
 }
 
 val viewModel = WriteStuffHistoryViewModel()
@@ -51,7 +48,7 @@ val viewModel = WriteStuffHistoryViewModel()
 class WriteStuffHistoryFragment: BaseFragment() {
     override var fragmentLayoutId = R.layout.fragment_write_stuff_history
 
-    lateinit var binding: FragmentWriteStuffHistoryBinding
+    private lateinit var binding: FragmentWriteStuffHistoryBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = DataBindingUtil.bind(view)!!

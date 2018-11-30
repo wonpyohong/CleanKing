@@ -15,36 +15,28 @@ import java.util.*
 class CategoryAdapter(val viewModel: WriteStuffHistoryViewModel):
         RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>(), ItemTouchHelperAdapter {
 
-    lateinit var categoryList: List<Category>
-
-    fun setItem(categoryList: List<Category>?) {
-        if (categoryList != null) {
-            this.categoryList = categoryList
-            notifyDataSetChanged()
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context))
         return CategoryViewHolder(binding)
     }
 
-    override fun getItemId(position: Int) = categoryList[position].hashCode().toLong()
+    override fun getItemId(position: Int) = viewModel.categoryList[position].hashCode().toLong()
 
-    override fun getItemCount() = categoryList.size
+    override fun getItemCount() = viewModel.categoryList.size
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(categoryList[position])
+        holder.bind(viewModel.categoryList[position])
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
-                Collections.swap(categoryList, i, i + 1)
+                Collections.swap(viewModel.categoryList, i, i + 1)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(categoryList, i, i - 1)
+                Collections.swap(viewModel.categoryList, i, i - 1)
             }
         }
         notifyItemMoved(fromPosition, toPosition)

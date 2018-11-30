@@ -15,36 +15,27 @@ import java.util.*
 class StuffAdapter(val viewModel: WriteStuffHistoryViewModel):
         RecyclerView.Adapter<StuffAdapter.StuffViewHolder>(), ItemTouchHelperAdapter {
 
-    lateinit var stuffList: List<Stuff>
-
-    fun setItem(stuffList: List<Stuff>?) {
-        if (stuffList != null) {
-            this.stuffList = stuffList
-            notifyDataSetChanged()
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StuffViewHolder {
         val binding = ItemStuffBinding.inflate(LayoutInflater.from(parent.context))
         return StuffViewHolder(binding)
     }
 
-    override fun getItemId(position: Int) = stuffList[position].hashCode().toLong()
+    override fun getItemId(position: Int) = viewModel.stuffList[position].hashCode().toLong()
 
-    override fun getItemCount() = stuffList.size
+    override fun getItemCount() = viewModel.stuffList.size
 
     override fun onBindViewHolder(holder: StuffViewHolder, position: Int) {
-        holder.bind(stuffList[position])
+        holder.bind(viewModel.stuffList[position])
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
-                Collections.swap(stuffList, i, i + 1)
+                Collections.swap(viewModel.stuffList, i, i + 1)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(stuffList, i, i - 1)
+                Collections.swap(viewModel.stuffList, i, i - 1)
             }
         }
         notifyItemMoved(fromPosition, toPosition)
