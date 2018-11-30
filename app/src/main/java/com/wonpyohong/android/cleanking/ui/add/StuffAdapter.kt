@@ -20,22 +20,22 @@ class StuffAdapter(val viewModel: WriteStuffHistoryViewModel):
         return StuffViewHolder(binding)
     }
 
-    override fun getItemId(position: Int) = viewModel.stuffList[position].hashCode().toLong()
+    override fun getItemId(position: Int) = viewModel.stuffList.value!![position].hashCode().toLong()
 
-    override fun getItemCount() = viewModel.stuffList.size
+    override fun getItemCount() = viewModel.stuffList.value!!.size
 
     override fun onBindViewHolder(holder: StuffViewHolder, position: Int) {
-        holder.bind(viewModel.stuffList[position])
+        holder.bind(viewModel.stuffList.value!![position])
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
-                Collections.swap(viewModel.stuffList, i, i + 1)
+                Collections.swap(viewModel.stuffList.value, i, i + 1)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(viewModel.stuffList, i, i - 1)
+                Collections.swap(viewModel.stuffList.value, i, i - 1)
             }
         }
         notifyItemMoved(fromPosition, toPosition)

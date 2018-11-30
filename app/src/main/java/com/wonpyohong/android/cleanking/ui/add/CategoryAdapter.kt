@@ -21,22 +21,22 @@ class CategoryAdapter(val viewModel: WriteStuffHistoryViewModel):
         return CategoryViewHolder(binding)
     }
 
-    override fun getItemId(position: Int) = viewModel.categoryList[position].hashCode().toLong()
+    override fun getItemId(position: Int) = viewModel.categoryList.value!![position].hashCode().toLong()
 
-    override fun getItemCount() = viewModel.categoryList.size
+    override fun getItemCount() = viewModel.categoryList.value!!.size
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(viewModel.categoryList[position])
+        holder.bind(viewModel.categoryList.value!![position])
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
-                Collections.swap(viewModel.categoryList, i, i + 1)
+                Collections.swap(viewModel.categoryList.value, i, i + 1)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(viewModel.categoryList, i, i - 1)
+                Collections.swap(viewModel.categoryList.value, i, i - 1)
             }
         }
         notifyItemMoved(fromPosition, toPosition)

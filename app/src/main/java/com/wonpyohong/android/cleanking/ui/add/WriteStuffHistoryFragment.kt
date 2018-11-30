@@ -1,33 +1,40 @@
 package com.wonpyohong.android.cleanking.ui.add
 
 import android.annotation.SuppressLint
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.databinding.BindingAdapter
 import android.databinding.DataBindingUtil
 import android.databinding.ObservableArrayList
 import android.os.Bundle
+import android.os.Looper
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.wonpyohong.android.cleanking.R
 import com.wonpyohong.android.cleanking.base.BaseFragment
 import com.wonpyohong.android.cleanking.databinding.FragmentWriteStuffHistoryBinding
 import com.wonpyohong.android.cleanking.room.stuff.Category
 import com.wonpyohong.android.cleanking.room.stuff.Stuff
+import com.wonpyohong.android.cleanking.room.stuff.StuffDatabase
+import com.wonpyohong.android.cleanking.support.recyclerview.DragHelperCallback
+import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
 
 @BindingAdapter("bind:categoryItem")
-fun bindCategoryItem(recyclerView: RecyclerView, categoryList: ObservableArrayList<Category>) {
-    viewModel.categoryList = categoryList
+fun bindCategoryItem(recyclerView: RecyclerView, categoryList: MutableLiveData<MutableList<Category>>) {
+//    viewModel.categoryList = categoryList
     recyclerView.adapter.notifyDataSetChanged()
 }
 
 @BindingAdapter("bind:stuffItem")
-fun bindStuffItem(recyclerView: RecyclerView, stuffList: ObservableArrayList<Stuff>) {
-    viewModel.stuffList = stuffList
+fun bindStuffItem(recyclerView: RecyclerView, stuffList: MutableLiveData<MutableList<Stuff>>) {
+//    viewModel.stuffList = stuffList
     recyclerView.adapter.notifyDataSetChanged()
 }
 
@@ -67,9 +74,54 @@ class WriteStuffHistoryFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = DataBindingUtil.bind(view)!!
         binding.viewModel = viewModel
+        binding.setLifecycleOwner(this)
 
-        viewModel.initCategoryRecyclerView(binding.categoryRecyclerView, ChipsLayoutManager.newBuilder(context!!).build())
-        viewModel.initStuffRecyclerView(binding.stuffRecyclerView, ChipsLayoutManager.newBuilder(context!!).build())
+        initCategoryRecyclerView(binding.categoryRecyclerView, ChipsLayoutManager.newBuilder(context!!).build())
+        initStuffRecyclerView(binding.stuffRecyclerView, ChipsLayoutManager.newBuilder(context!!).build())
+    }
+
+    private fun initCategoryRecyclerView(categoryRecyclerView: RecyclerView, chipsLayoutManager: ChipsLayoutManager) {
+        val categoryAdapter = CategoryAdapter(viewModel)
+        initRecyclerViewCommon(categoryRecyclerView, categoryAdapter, chipsLayoutManager)
+
+        StuffDatabase.getInstance().getCategoryDao().getAllCategoryList().subscribe {
+            viewModel.categoryList.value?.clear()
+            viewModel.categoryList.value?.addAll(it)
+
+            viewModel.categoryList.notifyObserver()
+        }
+    }
+
+    private fun initStuffRecyclerView(stuffRecyclerView: RecyclerView, chipsLayoutManager: ChipsLayoutManager) {
+        val stuffAdapter = StuffAdapter(viewModel)
+        initRecyclerViewCommon(stuffRecyclerView, stuffAdapter, chipsLayoutManager)
+
+        viewModel.selectedCategory.observe(this, Observer {
+            it?.let {
+                StuffDatabase.getInstance().getStuffDao().getStuffList(it.categoryId)
+                    .subscribe { list ->
+                        // 여기서 하는게 맞을까?? 이건 viewModel 데이터만 고치는 것인가 databinding이니까 UI도 고치는 것인가.
+                        // 생명 주기를 맞출 필요가 있는가?? (observe(this, ..))
+                        viewModel.stuffList.value?.clear()
+                        viewModel.stuffList.value?.addAll(list)
+
+                        viewModel.stuffList.notifyObserver()
+                    }
+            }
+        })
+    }
+
+    private fun initRecyclerViewCommon(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>, chipsLayoutManager: ChipsLayoutManager) {
+        adapter.setHasStableIds(true)
+        recyclerView.adapter = adapter
+
+        recyclerView.layoutManager = chipsLayoutManager
+        recyclerView.addItemDecoration(
+            SpacingItemDecoration(20, 20)
+        )
+
+        val touchHelper = ItemTouchHelper(DragHelperCallback(adapter as ItemTouchHelperAdapter))
+        touchHelper.attachToRecyclerView(recyclerView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
@@ -83,5 +135,13 @@ class WriteStuffHistoryFragment: BaseFragment() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    fun <T> MutableLiveData<T>.notifyObserver() {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            this.value = this.value
+        } else {
+            this.postValue(value)
+        }
     }
 }
