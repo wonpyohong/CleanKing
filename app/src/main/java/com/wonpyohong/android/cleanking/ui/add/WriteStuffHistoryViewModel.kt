@@ -3,11 +3,16 @@ package com.wonpyohong.android.cleanking.ui.add
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.Transformations
+import android.util.Log
+import com.wonpyohong.android.cleanking.base.BaseViewModel
 import com.wonpyohong.android.cleanking.room.stuff.Category
 import com.wonpyohong.android.cleanking.room.stuff.Stuff
 import com.wonpyohong.android.cleanking.room.stuff.StuffDatabase
 import com.wonpyohong.android.cleanking.room.stuff.StuffHistory
 import com.wonpyohong.android.cleanking.support.RxDayDataSetChangedEvent
+import com.wonpyohong.android.cleanking.support.notifyObserver
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,24 +20,40 @@ import io.reactivex.processors.PublishProcessor
 import io.reactivex.schedulers.Schedulers
 import org.threeten.bp.LocalDateTime
 
-class WriteStuffHistoryViewModel {
+class WriteStuffHistoryViewModel: BaseViewModel() {
     var selectedCategory = MutableLiveData<Category>()
     var selectedStuff = MutableLiveData<Stuff>()
 
-    var categoryList = MutableLiveData<MutableList<Category>>()
-    var stuffList = MutableLiveData<MutableList<Stuff>>()
+    lateinit var categoryList: LiveData<List<Category>>
+
+    lateinit var stuffList: LiveData<List<Stuff>>
 
     var newStuffName = MutableLiveData<String>()
 
     private val actionSignal: PublishProcessor<ACTION> = PublishProcessor.create()
 
-    init {
-        categoryList.value = mutableListOf()            // 정말 이게 최선인가??
-        stuffList.value = mutableListOf()
-    }
-
     fun getActionSignal(): LiveData<ACTION> {
         return LiveDataReactiveStreams.fromPublisher(actionSignal)
+    }
+
+    fun observeCategoryList() {
+        Log.d("HWP", "observeCategoryList")
+        if (!::categoryList.isInitialized) {
+            categoryList = MutableLiveData()
+        }
+        Log.d("HWP", "observeCategoryList, pre: ${categoryList.value}")
+        categoryList = StuffDatabase.getInstance().getCategoryDao().getAllCategoryList()
+        Log.d("HWP", "observeCategoryList, post: ${categoryList.value}")
+    }
+
+    fun observeStuffListOnSelectedCategory() {
+        if (!::stuffList.isInitialized) {
+            stuffList = MutableLiveData()
+        }
+
+        stuffList = Transformations.switchMap(selectedCategory) { selectedCategory ->
+            StuffDatabase.getInstance().getStuffDao().getStuffList(selectedCategory.categoryId)
+        }
     }
 
     fun onCategoryClicked(category: Category) {

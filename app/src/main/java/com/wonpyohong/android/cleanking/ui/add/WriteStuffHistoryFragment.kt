@@ -1,13 +1,13 @@
 package com.wonpyohong.android.cleanking.ui.add
 
 import android.annotation.SuppressLint
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.databinding.BindingAdapter
 import android.databinding.DataBindingUtil
-import android.databinding.ObservableArrayList
 import android.os.Bundle
-import android.os.Looper
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -22,17 +22,16 @@ import com.wonpyohong.android.cleanking.base.BaseFragment
 import com.wonpyohong.android.cleanking.databinding.FragmentWriteStuffHistoryBinding
 import com.wonpyohong.android.cleanking.room.stuff.Category
 import com.wonpyohong.android.cleanking.room.stuff.Stuff
-import com.wonpyohong.android.cleanking.room.stuff.StuffDatabase
 import com.wonpyohong.android.cleanking.support.recyclerview.DragHelperCallback
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
 
 @BindingAdapter("bind:categoryItem")
-fun bindCategoryItem(recyclerView: RecyclerView, categoryList: MutableLiveData<MutableList<Category>>) {
+fun bindCategoryItem(recyclerView: RecyclerView, categoryList: LiveData<List<Category>>) {
     recyclerView.adapter.notifyDataSetChanged()
 }
 
 @BindingAdapter("bind:stuffItem")
-fun bindStuffItem(recyclerView: RecyclerView, stuffList: MutableLiveData<MutableList<Stuff>>) {
+fun bindStuffItem(recyclerView: RecyclerView, stuffList: LiveData<List<Stuff>>) {
     recyclerView.adapter.notifyDataSetChanged()
 }
 
@@ -41,11 +40,14 @@ class WriteStuffHistoryFragment: BaseFragment() {
 
     private lateinit var binding: FragmentWriteStuffHistoryBinding
 
-    val viewModel = WriteStuffHistoryViewModel()
+    private lateinit var viewModel: WriteStuffHistoryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel = ViewModelProviders.of(this).get(WriteStuffHistoryViewModel::class.java)
+        viewModel.observeCategoryList()
+        viewModel.observeStuffListOnSelectedCategory()
         observeEvents()
     }
 
@@ -81,32 +83,11 @@ class WriteStuffHistoryFragment: BaseFragment() {
     private fun initCategoryRecyclerView(categoryRecyclerView: RecyclerView, chipsLayoutManager: ChipsLayoutManager) {
         val categoryAdapter = CategoryAdapter(viewModel)
         initRecyclerViewCommon(categoryRecyclerView, categoryAdapter, chipsLayoutManager)
-
-        StuffDatabase.getInstance().getCategoryDao().getAllCategoryList().subscribe {
-            viewModel.categoryList.value?.clear()
-            viewModel.categoryList.value?.addAll(it)
-
-            viewModel.categoryList.notifyObserver()
-        }
     }
 
     private fun initStuffRecyclerView(stuffRecyclerView: RecyclerView, chipsLayoutManager: ChipsLayoutManager) {
         val stuffAdapter = StuffAdapter(viewModel)
         initRecyclerViewCommon(stuffRecyclerView, stuffAdapter, chipsLayoutManager)
-
-        viewModel.selectedCategory.observe(this, Observer {
-            it?.let {
-                StuffDatabase.getInstance().getStuffDao().getStuffList(it.categoryId)
-                    .subscribe { list ->
-                        // 여기서 하는게 맞을까?? 이건 viewModel 데이터만 고치는 것인가 databinding이니까 UI도 고치는 것인가.
-                        // 생명 주기를 맞출 필요가 있는가?? (observe(this, ..))
-                        viewModel.stuffList.value?.clear()
-                        viewModel.stuffList.value?.addAll(list)
-
-                        viewModel.stuffList.notifyObserver()
-                    }
-            }
-        })
     }
 
     private fun initRecyclerViewCommon(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>, chipsLayoutManager: ChipsLayoutManager) {
@@ -133,13 +114,5 @@ class WriteStuffHistoryFragment: BaseFragment() {
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    fun <T> MutableLiveData<T>.notifyObserver() {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            this.value = this.value
-        } else {
-            this.postValue(value)
-        }
     }
 }

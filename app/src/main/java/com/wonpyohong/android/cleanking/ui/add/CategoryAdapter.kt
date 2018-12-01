@@ -3,6 +3,7 @@ package com.wonpyohong.android.cleanking.ui.add
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.wonpyohong.android.cleanking.databinding.ItemCategoryBinding
@@ -15,7 +16,6 @@ import java.util.*
 class CategoryAdapter(val viewModel: WriteStuffHistoryViewModel):
         RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>(), ItemTouchHelperAdapter {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context))
         return CategoryViewHolder(binding)
@@ -23,7 +23,7 @@ class CategoryAdapter(val viewModel: WriteStuffHistoryViewModel):
 
     override fun getItemId(position: Int) = viewModel.categoryList.value!![position].hashCode().toLong()
 
-    override fun getItemCount() = viewModel.categoryList.value!!.size
+    override fun getItemCount() = viewModel.categoryList.value?.size ?: 0
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         holder.bind(viewModel.categoryList.value!![position])

@@ -1,5 +1,7 @@
 package com.wonpyohong.android.cleanking.room.stuff
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.persistence.room.*
 import io.reactivex.Flowable
 
@@ -9,7 +11,7 @@ interface StuffDao {
     fun getStuffList(): Flowable<List<Stuff>>
 
     @Query("SELECT * FROM stuff WHERE categoryId=:categoryId")
-    fun getStuffList(categoryId: Int): Flowable<List<Stuff>>
+    fun getStuffList(categoryId: Int): LiveData<List<Stuff>>
 
     @Query("DELETE FROM stuff")
     fun clearAll()

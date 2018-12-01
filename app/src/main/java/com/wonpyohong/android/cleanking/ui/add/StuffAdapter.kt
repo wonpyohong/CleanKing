@@ -22,7 +22,7 @@ class StuffAdapter(val viewModel: WriteStuffHistoryViewModel):
 
     override fun getItemId(position: Int) = viewModel.stuffList.value!![position].hashCode().toLong()
 
-    override fun getItemCount() = viewModel.stuffList.value!!.size
+    override fun getItemCount() = viewModel.stuffList.value?.size ?: 0
 
     override fun onBindViewHolder(holder: StuffViewHolder, position: Int) {
         holder.bind(viewModel.stuffList.value!![position])

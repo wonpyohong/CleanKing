@@ -1,12 +1,14 @@
 package com.wonpyohong.android.cleanking.room.stuff
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.persistence.room.*
 import io.reactivex.Flowable
 
 @Dao
 interface CategoryDao {
     @Query("SELECT * FROM category")
-    fun getAllCategoryList(): Flowable<List<Category>>
+    fun getAllCategoryList(): LiveData<List<Category>>
 
     @Query("DELETE FROM category")
     fun clearAll()

@@ -7,7 +7,7 @@ import com.wonpyohong.android.cleanking.base.BaseActivity
 class WriteStuffHistoryActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_dump)
+        setContentView(R.layout.activity_write_stuff_history)
 
         initFragment()
     }
