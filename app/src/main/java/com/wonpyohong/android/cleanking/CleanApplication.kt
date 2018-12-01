@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.facebook.stetho.Stetho
 import com.jakewharton.threetenabp.AndroidThreeTen
+import org.koin.android.ext.android.startKoin
 
 class CleanApplication: Application() {
     init {
@@ -23,5 +24,7 @@ class CleanApplication: Application() {
         AndroidThreeTen.init(this)
 
         Stetho.initializeWithDefaults(this)
+
+        startKoin(this, listOf(koinModule))
     }
 }

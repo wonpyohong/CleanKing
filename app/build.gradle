@@ -56,9 +56,17 @@ dependencies {
     implementation deps.arch.extensions
     implementation deps.arch.reactivestreams
 
+    // room
     implementation deps.room.runtime
     kapt deps.room.compiler
     implementation deps.room.rxjava2
+
+    // koin
+    implementation deps.koin.core
+    implementation deps.koin.core_ext
+    implementation deps.koin.android
+    implementation deps.koin.android_scope
+    implementation deps.koin.android_viewmodel
 
     // rx
     implementation deps.normal.rxJava

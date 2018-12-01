@@ -2,9 +2,7 @@ package com.wonpyohong.android.cleanking.ui.add
 
 import android.annotation.SuppressLint
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.databinding.BindingAdapter
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -24,6 +22,7 @@ import com.wonpyohong.android.cleanking.room.stuff.Category
 import com.wonpyohong.android.cleanking.room.stuff.Stuff
 import com.wonpyohong.android.cleanking.support.recyclerview.DragHelperCallback
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
+import org.koin.android.viewmodel.ext.android.viewModel
 
 @BindingAdapter("bind:categoryItem")
 fun bindCategoryItem(recyclerView: RecyclerView, categoryList: LiveData<List<Category>>) {
@@ -40,12 +39,11 @@ class WriteStuffHistoryFragment: BaseFragment() {
 
     private lateinit var binding: FragmentWriteStuffHistoryBinding
 
-    private lateinit var viewModel: WriteStuffHistoryViewModel
+    private val viewModel: WriteStuffHistoryViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(WriteStuffHistoryViewModel::class.java)
         viewModel.observeCategoryList()
         viewModel.observeStuffListOnSelectedCategory()
         observeEvents()
