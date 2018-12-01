@@ -37,20 +37,10 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
     }
 
     fun observeCategoryList() {
-        Log.d("HWP", "observeCategoryList")
-        if (!::categoryList.isInitialized) {
-            categoryList = MutableLiveData()
-        }
-        Log.d("HWP", "observeCategoryList, pre: ${categoryList.value}")
         categoryList = StuffDatabase.getInstance().getCategoryDao().getAllCategoryList()
-        Log.d("HWP", "observeCategoryList, post: ${categoryList.value}")
     }
 
     fun observeStuffListOnSelectedCategory() {
-        if (!::stuffList.isInitialized) {
-            stuffList = MutableLiveData()
-        }
-
         stuffList = Transformations.switchMap(selectedCategory) { selectedCategory ->
             StuffDatabase.getInstance().getStuffDao().getStuffList(selectedCategory.categoryId)
         }
