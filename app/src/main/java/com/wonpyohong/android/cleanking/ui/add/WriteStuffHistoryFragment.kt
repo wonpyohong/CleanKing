@@ -28,22 +28,20 @@ import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdap
 
 @BindingAdapter("bind:categoryItem")
 fun bindCategoryItem(recyclerView: RecyclerView, categoryList: MutableLiveData<MutableList<Category>>) {
-//    viewModel.categoryList = categoryList
     recyclerView.adapter.notifyDataSetChanged()
 }
 
 @BindingAdapter("bind:stuffItem")
 fun bindStuffItem(recyclerView: RecyclerView, stuffList: MutableLiveData<MutableList<Stuff>>) {
-//    viewModel.stuffList = stuffList
     recyclerView.adapter.notifyDataSetChanged()
 }
-
-val viewModel = WriteStuffHistoryViewModel()
 
 class WriteStuffHistoryFragment: BaseFragment() {
     override var fragmentLayoutId = R.layout.fragment_write_stuff_history
 
     private lateinit var binding: FragmentWriteStuffHistoryBinding
+
+    val viewModel = WriteStuffHistoryViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
