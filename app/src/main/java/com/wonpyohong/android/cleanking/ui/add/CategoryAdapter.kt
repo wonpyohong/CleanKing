@@ -1,20 +1,21 @@
 package com.wonpyohong.android.cleanking.ui.add
 
-import android.databinding.ObservableBoolean
-import android.databinding.ObservableField
+import android.arch.lifecycle.LifecycleOwner
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.wonpyohong.android.cleanking.databinding.ItemCategoryBinding
 import com.wonpyohong.android.cleanking.room.stuff.Category
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
-import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperViewHolder
+import org.koin.android.viewmodel.ext.koin.viewModel
+import org.koin.standalone.KoinComponent
 import java.util.*
 
 
-class CategoryAdapter(val viewModel: WriteStuffHistoryViewModel):
-        RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>(), ItemTouchHelperAdapter {
+class CategoryAdapter(val lifeCycleOwner: LifecycleOwner):
+        RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>(), ItemTouchHelperAdapter, KoinComponent {
+
+    val viewModel: WriteStuffHistoryViewModel by viewModel(lifeCycleOwner)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val binding = ItemCategoryBinding.inflate(LayoutInflater.from(parent.context))
@@ -46,22 +47,11 @@ class CategoryAdapter(val viewModel: WriteStuffHistoryViewModel):
     override fun onItemDismiss(position: Int) {
     }
 
-    inner class CategoryViewHolder(val binding: ItemCategoryBinding) :
-            RecyclerView.ViewHolder(binding.root), ItemTouchHelperViewHolder {
-
-        var selected = ObservableBoolean(false)
-
+    inner class CategoryViewHolder(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(category: Category) {
             binding.category = category
             binding.viewModel = viewModel
-        }
-
-        override fun onItemSelected() {
-            selected.set(true)
-        }
-
-        override fun onItemCleared() {
-            selected.set(false)
+            binding.setLifecycleOwner(lifeCycleOwner)
         }
     }
 }

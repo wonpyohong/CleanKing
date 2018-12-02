@@ -22,7 +22,9 @@ import com.wonpyohong.android.cleanking.room.stuff.Category
 import com.wonpyohong.android.cleanking.room.stuff.Stuff
 import com.wonpyohong.android.cleanking.support.recyclerview.DragHelperCallback
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
+import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 @BindingAdapter("bind:categoryItem")
 fun bindCategoryItem(recyclerView: RecyclerView, categoryList: LiveData<List<Category>>) {
@@ -40,6 +42,8 @@ class WriteStuffHistoryFragment: BaseFragment() {
     private lateinit var binding: FragmentWriteStuffHistoryBinding
 
     private val viewModel: WriteStuffHistoryViewModel by viewModel()
+    private val categoryAdapter: CategoryAdapter by inject { parametersOf(this) }
+    private val stuffAdapter: StuffAdapter by inject { parametersOf(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,18 +78,8 @@ class WriteStuffHistoryFragment: BaseFragment() {
         binding.viewModel = viewModel
         binding.setLifecycleOwner(this)
 
-        initCategoryRecyclerView(binding.categoryRecyclerView, ChipsLayoutManager.newBuilder(context!!).build())
-        initStuffRecyclerView(binding.stuffRecyclerView, ChipsLayoutManager.newBuilder(context!!).build())
-    }
-
-    private fun initCategoryRecyclerView(categoryRecyclerView: RecyclerView, chipsLayoutManager: ChipsLayoutManager) {
-        val categoryAdapter = CategoryAdapter(viewModel)
-        initRecyclerViewCommon(categoryRecyclerView, categoryAdapter, chipsLayoutManager)
-    }
-
-    private fun initStuffRecyclerView(stuffRecyclerView: RecyclerView, chipsLayoutManager: ChipsLayoutManager) {
-        val stuffAdapter = StuffAdapter(viewModel)
-        initRecyclerViewCommon(stuffRecyclerView, stuffAdapter, chipsLayoutManager)
+        initRecyclerViewCommon(binding.categoryRecyclerView, categoryAdapter, ChipsLayoutManager.newBuilder(context!!).build())
+        initRecyclerViewCommon(binding.stuffRecyclerView, stuffAdapter, ChipsLayoutManager.newBuilder(context!!).build())
     }
 
     private fun initRecyclerViewCommon(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>, chipsLayoutManager: ChipsLayoutManager) {
