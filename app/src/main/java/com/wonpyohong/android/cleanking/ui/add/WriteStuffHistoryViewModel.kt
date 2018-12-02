@@ -68,7 +68,8 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
                 val newStuff = Stuff(
                     0,
                     it.categoryId,
-                    newStuffName.value!!
+                    newStuffName.value!!,
+                    0
                 )
 
                 Completable.fromAction {
