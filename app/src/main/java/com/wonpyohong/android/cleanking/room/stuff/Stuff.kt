@@ -3,10 +3,11 @@ package com.wonpyohong.android.cleanking.room.stuff
 import android.arch.lifecycle.MutableLiveData
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
+import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
 import android.databinding.ObservableBoolean
 
-@Entity(tableName = "stuff")
+@Entity(tableName = "stuff", indices = [Index(value = ["categoryId", "stuffName"], unique = true)])
 class Stuff(
         @PrimaryKey(autoGenerate = true)
         val id: Int,

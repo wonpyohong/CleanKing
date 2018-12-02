@@ -8,7 +8,7 @@ import android.arch.persistence.room.migration.Migration
 import com.wonpyohong.android.cleanking.CleanApplication.Companion.applicationContext
 import java.util.concurrent.Executors
 
-@Database(entities = [Category::class, Stuff::class, StuffHistory::class], version = 1)
+@Database(entities = [Category::class, Stuff::class, StuffHistory::class], version = 2)
 abstract class StuffDatabase: RoomDatabase() {
     abstract fun getCategoryDao(): CategoryDao
     abstract fun getStuffDao(): StuffDao
@@ -56,6 +56,10 @@ private fun addBaseData() {
 
 object Migration1to2: Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DELETE FROM category WHERE categoryId NOT IN (SELECT  MIN(categoryId) FROM category GROUP BY categoryName)")
+        database.execSQL("CREATE UNIQUE INDEX index_category_categoryName ON category(categoryName)")
 
+        database.execSQL("DELETE FROM stuff WHERE id NOT IN (SELECT  MIN(id) FROM stuff GROUP BY categoryId, StuffName)")
+        database.execSQL("CREATE UNIQUE INDEX index_stuff_categoryId_stuffName ON stuff(categoryId, stuffName)")
     }
 }
