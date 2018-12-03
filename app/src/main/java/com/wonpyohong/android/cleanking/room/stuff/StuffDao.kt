@@ -11,7 +11,7 @@ interface StuffDao {
     fun getStuffList(): Flowable<List<Stuff>>
 
     @Query("SELECT * FROM stuff WHERE categoryId=:categoryId")
-    fun getStuffList(categoryId: Int): LiveData<List<Stuff>>
+    fun getStuffList(categoryId: Int): LiveData<MutableList<Stuff>>
 
     @Query("DELETE FROM stuff")
     fun clearAll()

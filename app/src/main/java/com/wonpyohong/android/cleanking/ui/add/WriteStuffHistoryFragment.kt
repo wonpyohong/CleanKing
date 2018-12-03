@@ -2,6 +2,7 @@ package com.wonpyohong.android.cleanking.ui.add
 
 import android.annotation.SuppressLint
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.databinding.BindingAdapter
 import android.databinding.DataBindingUtil
@@ -32,7 +33,8 @@ fun bindCategoryItem(recyclerView: RecyclerView, categoryList: LiveData<List<Cat
 }
 
 @BindingAdapter("bind:stuffItem")
-fun bindStuffItem(recyclerView: RecyclerView, stuffList: LiveData<List<Stuff>>) {
+fun bindStuffItem(recyclerView: RecyclerView, stuffList: LiveData<MutableList<Stuff>>) {
+    stuffList.value?.sortWith(compareByDescending { it.frequency })
     recyclerView.adapter.notifyDataSetChanged()
 }
 

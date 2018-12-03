@@ -23,7 +23,7 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
 
     lateinit var categoryList: LiveData<List<Category>>
 
-    lateinit var stuffList: LiveData<List<Stuff>>
+    lateinit var stuffList: LiveData<MutableList<Stuff>>
 
     var newStuffName = MutableLiveData<String>()
 
