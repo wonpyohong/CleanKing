@@ -18,7 +18,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.add.WriteStuffHistoryActivity"/>
+        <activity android:name=".ui.add.WriteStuffHistoryActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
     </application>
 
 </manifest>

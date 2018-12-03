@@ -2,6 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:bind="http://schemas.android.com/tools">
     <data>
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
             type="com.wonpyohong.android.cleanking.ui.add.WriteStuffHistoryViewModel" />
@@ -10,6 +11,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <TextView
@@ -27,32 +30,26 @@
 
         <View style="@style/divider" />
 
-        <TextView
-            android:id="@+id/selectedCategory"
-            style="@style/title"
-            android:text='@{viewModel.selectedCategory == null ? "" : viewModel.selectedCategory.CategoryName, default=버리기}'
-            />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/stuffRecyclerView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:padding="8dp"
-            bind:stuffItem="@{viewModel.stuffList}"/>
+            android:visibility="@{viewModel.selectedCategory == null ? View.GONE : View.VISIBLE}"
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/newStuffEditText"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:hint="새롭게 xx할 물건을 추가해보세요"
-            android:text="@={viewModel.newStuffName}"/>
+            <TextView
+                android:id="@+id/selectedCategory"
+                style="@style/title"
+                android:text='@{viewModel.selectedCategory == null ? "" : viewModel.selectedCategory.CategoryName, default=버리기}'
+                />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="추가"
-            android:onClick="@{() -> viewModel.addStuff()}"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/stuffRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:padding="8dp"
+                bind:stuffItem="@{viewModel.stuffList}"/>
+        </LinearLayout>
     </LinearLayout>
 </layout>

@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.databinding.BindingAdapter
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -26,6 +28,13 @@ import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdap
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.graphics.Rect
+import android.widget.EditText
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
+import com.wonpyohong.android.cleanking.hideKeyboard
+
 
 @BindingAdapter("bind:categoryItem")
 fun bindCategoryItem(recyclerView: RecyclerView, categoryList: LiveData<List<Category>>) {
