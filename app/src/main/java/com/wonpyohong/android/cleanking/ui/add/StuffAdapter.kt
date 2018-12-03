@@ -111,6 +111,7 @@ class StuffAdapter(val lifeCycleOwner: LifecycleOwner):
                 } else {
                     if (view.text.isNotEmpty()) {
                         viewModel.addStuff()
+                        view.setText("")
                     }
 
                     hideKeyboard(view)
