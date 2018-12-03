@@ -104,7 +104,8 @@ class WriteStuffHistoryFragment: BaseFragment() {
     @SuppressLint("CheckResult")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_write_history) {
-            return viewModel.writeHistory()
+            viewModel.writeHistory()
+            return true
         }
 
         return super.onOptionsItemSelected(item)

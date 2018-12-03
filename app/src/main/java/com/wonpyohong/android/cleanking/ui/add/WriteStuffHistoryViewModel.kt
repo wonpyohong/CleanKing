@@ -78,17 +78,15 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
             actionSignal.offer(ACTION.CATEGORY_NOT_SELECTED)
     }
 
-    fun writeHistory(): Boolean {
+    fun writeHistory() {
         if (selectedCategory.value == null) {
             actionSignal.offer(ACTION.CATEGORY_NOT_SELECTED)
-
-            return true
+            return
         }
 
         if (selectedStuff.value == null) {
             actionSignal.offer(ACTION.STUFF_NOT_SELECTED)
-
-            return true
+            return
         }
 
         val stuffHistory = StuffHistory(0, LocalDateTime.now().minusHours(4).toLocalDate().toString(),
@@ -121,17 +119,7 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
             }
         })
         )
-
-        return true
     }
-
-    private fun <T: android.databinding.Observable> T.addOnPropertyChanged(callback: (T) -> Unit) =
-        addOnPropertyChangedCallback(
-            object: android.databinding.Observable.OnPropertyChangedCallback() {
-                override fun onPropertyChanged(
-                    observable: android.databinding.Observable?, i: Int) =
-                    callback(observable as T)
-            })
 
     enum class ACTION {
         CATEGORY_NOT_SELECTED,
