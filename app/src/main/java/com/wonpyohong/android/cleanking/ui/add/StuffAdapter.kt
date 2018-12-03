@@ -47,7 +47,7 @@ class StuffAdapter(val lifeCycleOwner: LifecycleOwner):
     override fun onItemDismiss(position: Int) {
     }
 
-    inner class StuffViewHolder(val binding: ItemStuffBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class StuffViewHolder(private val binding: ItemStuffBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(stuff: Stuff) {
             binding.stuff = stuff
             binding.viewModel = viewModel

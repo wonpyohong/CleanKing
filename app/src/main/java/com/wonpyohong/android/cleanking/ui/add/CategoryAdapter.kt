@@ -47,7 +47,7 @@ class CategoryAdapter(val lifeCycleOwner: LifecycleOwner):
     override fun onItemDismiss(position: Int) {
     }
 
-    inner class CategoryViewHolder(val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class CategoryViewHolder(private val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(category: Category) {
             binding.category = category
             binding.viewModel = viewModel

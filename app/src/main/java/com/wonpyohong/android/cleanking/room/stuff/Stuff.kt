@@ -13,7 +13,7 @@ class Stuff(
         val id: Int,
         val categoryId: Int,                           // id로 할 것인가. 사용자가 카테고리를 수정, 삭제 시에 어떻게 할지? foreign키로 연결 해야 하는가?
         val stuffName: String,
-        val frequency: Int) {
+        var frequency: Int) {
 
         @Ignore
         var isSelected = MutableLiveData<Boolean>()

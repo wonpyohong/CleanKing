@@ -3,16 +3,13 @@ package com.wonpyohong.android.cleanking.ui.add
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
-import android.util.Log
 import com.wonpyohong.android.cleanking.base.BaseViewModel
 import com.wonpyohong.android.cleanking.room.stuff.Category
 import com.wonpyohong.android.cleanking.room.stuff.Stuff
 import com.wonpyohong.android.cleanking.room.stuff.StuffDatabase
 import com.wonpyohong.android.cleanking.room.stuff.StuffHistory
 import com.wonpyohong.android.cleanking.support.RxDayDataSetChangedEvent
-import com.wonpyohong.android.cleanking.support.notifyObserver
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -94,23 +91,33 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
             return true
         }
 
-        val stuff = StuffHistory(0, LocalDateTime.now().minusHours(4).toLocalDate().toString(),
+        val stuffHistory = StuffHistory(0, LocalDateTime.now().minusHours(4).toLocalDate().toString(),
             selectedCategory.value!!.categoryName,
             selectedStuff.value!!.stuffName)
 
-        Single.just(1)
-            .subscribeOn(Schedulers.io())
-            .map {
-                StuffDatabase.getInstance().getStuffHistoryDao().insert(stuff)
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ exerciseId ->
-                RxDayDataSetChangedEvent.sendEvent(RxDayDataSetChangedEvent.DayDataSetChanged())
+        addDisposable(Single.fromCallable {
+            val stuff = stuffList.value?.find { it.categoryId == selectedCategory.value!!.categoryId && it.stuffName == stuffHistory.stuffName}
+            StuffDatabase.getInstance().beginTransaction()
+            if (stuff != null) {
+                stuff.frequency++
 
-                actionSignal.offer(ACTION.FINISH)
-            }, {
-                it.printStackTrace()
-            })
+                StuffDatabase.getInstance().getStuffDao().update(stuff)
+                StuffDatabase.getInstance().getStuffHistoryDao().insert(stuffHistory)
+                StuffDatabase.getInstance().setTransactionSuccessful()
+            }
+        }
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({
+            RxDayDataSetChangedEvent.sendEvent(RxDayDataSetChangedEvent.DayDataSetChanged())
+
+            StuffDatabase.getInstance().endTransaction()
+            actionSignal.offer(ACTION.FINISH)
+        }, {
+            it.printStackTrace()
+            StuffDatabase.getInstance().endTransaction()
+        })
+        )
 
         return true
     }
