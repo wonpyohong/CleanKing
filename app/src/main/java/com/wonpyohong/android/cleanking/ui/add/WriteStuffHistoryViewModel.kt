@@ -95,15 +95,17 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
             selectedCategory.value!!.categoryName,
             selectedStuff.value!!.stuffName)
 
+        val stuffDatabase = StuffDatabase.getInstance()
         addDisposable(Single.fromCallable {
             val stuff = stuffList.value?.find { it.categoryId == selectedCategory.value!!.categoryId && it.stuffName == stuffHistory.stuffName}
-            StuffDatabase.getInstance().beginTransaction()
+            stuffDatabase.beginTransaction()
             if (stuff != null) {
                 stuff.frequency++
 
-                StuffDatabase.getInstance().getStuffDao().update(stuff)
-                StuffDatabase.getInstance().getStuffHistoryDao().insert(stuffHistory)
-                StuffDatabase.getInstance().setTransactionSuccessful()
+                stuffDatabase.getStuffDao().update(stuff)
+                stuffDatabase.getStuffHistoryDao().insert(stuffHistory)
+                stuffDatabase.setTransactionSuccessful()
+                stuffDatabase.endTransaction()
             }
         }
         .subscribeOn(Schedulers.io())
@@ -111,11 +113,12 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
         .subscribe({
             RxDayDataSetChangedEvent.sendEvent(RxDayDataSetChangedEvent.DayDataSetChanged())
 
-            StuffDatabase.getInstance().endTransaction()
             actionSignal.offer(ACTION.FINISH)
         }, {
             it.printStackTrace()
-            StuffDatabase.getInstance().endTransaction()
+            if (stuffDatabase.inTransaction()) {
+                stuffDatabase.endTransaction()
+            }
         })
         )
 
