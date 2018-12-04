@@ -2,16 +2,12 @@ package com.wonpyohong.android.cleanking.ui.add
 
 import android.annotation.SuppressLint
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
-import android.content.Context
 import android.databinding.BindingAdapter
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -23,17 +19,9 @@ import com.wonpyohong.android.cleanking.base.BaseFragment
 import com.wonpyohong.android.cleanking.databinding.FragmentWriteStuffHistoryBinding
 import com.wonpyohong.android.cleanking.room.stuff.Category
 import com.wonpyohong.android.cleanking.room.stuff.Stuff
-import com.wonpyohong.android.cleanking.support.recyclerview.DragHelperCallback
-import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import android.content.Context.INPUT_METHOD_SERVICE
-import android.graphics.Rect
-import android.widget.EditText
-import android.view.MotionEvent
-import android.view.inputmethod.InputMethodManager
-import com.wonpyohong.android.cleanking.hideKeyboard
 
 
 @BindingAdapter("bind:categoryItem")
@@ -62,6 +50,7 @@ class WriteStuffHistoryFragment: BaseFragment() {
         viewModel.observeCategoryList()
         viewModel.observeStuffListOnSelectedCategory()
         observeEvents()
+        observeMergeStuffEvents()
     }
 
     private fun observeEvents() {
@@ -70,17 +59,34 @@ class WriteStuffHistoryFragment: BaseFragment() {
                 it == WriteStuffHistoryViewModel.ACTION.CATEGORY_NOT_SELECTED -> {
                     AlertDialog.Builder(context!!)
                         .setMessage("카테고리를 선택하셔야 합니다")
+                        .setPositiveButton("확인") { dialog, which -> dialog.dismiss() }
                         .show()
                 }
+
                 it == WriteStuffHistoryViewModel.ACTION.STUFF_NOT_SELECTED -> {
                     AlertDialog.Builder(context!!)
                         .setMessage("세부 항목을 선택하셔야 합니다")
+                        .setPositiveButton("확인") { dialog, which -> dialog.dismiss() }
                         .show()
                 }
+
                 it == WriteStuffHistoryViewModel.ACTION.FINISH -> {
                     activity?.finish()
                 }
             }
+        })
+    }
+
+    private fun observeMergeStuffEvents() {
+        viewModel.getMergeStuffSignal().observe(this, Observer {
+            AlertDialog.Builder(context!!)
+                .setMessage("통합하시겠습니까?")
+                .setPositiveButton("확인") { dialog, which ->
+                    dialog.dismiss()
+                    viewModel.onMergeStuffConfirmed(it!!)
+                }
+                .setNegativeButton("취소") { dialog, which -> dialog.dismiss() }
+                .show()
         })
     }
 
@@ -101,9 +107,6 @@ class WriteStuffHistoryFragment: BaseFragment() {
         recyclerView.addItemDecoration(
             SpacingItemDecoration(20, 20)
         )
-
-        val touchHelper = ItemTouchHelper(DragHelperCallback(adapter as ItemTouchHelperAdapter))
-        touchHelper.attachToRecyclerView(recyclerView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {

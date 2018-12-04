@@ -24,6 +24,7 @@
             android:layout_margin="10dp"
             android:background="@{stuff.isSelected ? @drawable/category_background_selected : @drawable/category_background_default, default=@drawable/category_background_default}"
             android:onClick="@{(view) -> viewModel.onStuffClicked(stuff)}"
+            android:onLongClick="@{(view) -> viewModel.onStuffLongClicked(view, stuff)}"
             android:orientation="horizontal">
 
         <TextView

@@ -22,6 +22,10 @@ class Stuff(
                 isSelected.value = !isSelected.value!!
         }
 
+        fun setSelectedTrue() {
+                isSelected.value = true
+        }
+
         fun setSelectedFalse() {
                 isSelected.value = false
         }

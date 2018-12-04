@@ -13,7 +13,7 @@ import java.util.*
 
 
 class CategoryAdapter(val lifeCycleOwner: LifecycleOwner):
-        RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>(), ItemTouchHelperAdapter, KoinComponent {
+        RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>(), KoinComponent {
 
     val viewModel: WriteStuffHistoryViewModel by viewModel(lifeCycleOwner)
 
@@ -28,23 +28,6 @@ class CategoryAdapter(val lifeCycleOwner: LifecycleOwner):
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         holder.bind(viewModel.categoryList.value!![position])
-    }
-
-    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        if (fromPosition < toPosition) {
-            for (i in fromPosition until toPosition) {
-                Collections.swap(viewModel.categoryList.value, i, i + 1)
-            }
-        } else {
-            for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(viewModel.categoryList.value, i, i - 1)
-            }
-        }
-        notifyItemMoved(fromPosition, toPosition)
-        return true
-    }
-
-    override fun onItemDismiss(position: Int) {
     }
 
     inner class CategoryViewHolder(private val binding: ItemCategoryBinding) : RecyclerView.ViewHolder(binding.root) {

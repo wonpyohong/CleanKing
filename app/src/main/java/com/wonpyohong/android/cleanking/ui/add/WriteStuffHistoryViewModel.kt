@@ -4,6 +4,9 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Transformations
+import android.support.v4.view.ViewCompat.startDragAndDrop
+import android.util.Log
+import android.view.View
 import com.wonpyohong.android.cleanking.base.BaseViewModel
 import com.wonpyohong.android.cleanking.room.stuff.Category
 import com.wonpyohong.android.cleanking.room.stuff.Stuff
@@ -29,8 +32,16 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
 
     private val actionSignal: PublishProcessor<ACTION> = PublishProcessor.create()
 
+    private val mergeStuffSignal: PublishProcessor<MergeStuff> = PublishProcessor.create()
+
+    data class MergeStuff(val child: Stuff, val parent: Stuff)
+
     fun getActionSignal(): LiveData<ACTION> {
         return LiveDataReactiveStreams.fromPublisher(actionSignal)
+    }
+
+    fun getMergeStuffSignal(): LiveData<MergeStuff> {
+        return LiveDataReactiveStreams.fromPublisher(mergeStuffSignal)
     }
 
     fun observeCategoryList() {
@@ -57,6 +68,21 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
         }
         stuff.onClicked()
         selectedStuff.value = stuff
+    }
+
+    fun onStuffLongClicked(view: View, stuff: Stuff): Boolean {
+        view.startDragAndDrop(null, View.DragShadowBuilder(view), Pair(view, stuff), 0)
+        view.alpha = 0.5f
+
+        return true
+    }
+
+    fun requestMergeStuff(child: Stuff, parent: Stuff) {
+        mergeStuffSignal.offer(MergeStuff(child, parent))
+    }
+
+    fun onMergeStuffConfirmed(mergeStuff: MergeStuff) {
+        Log.d("HWP", "onMergeStuffConfirmed, ${mergeStuff}")
     }
 
     fun addStuff() {

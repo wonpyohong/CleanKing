@@ -3,7 +3,7 @@ package com.wonpyohong.android.cleanking.ui.add
 import android.arch.lifecycle.LifecycleOwner
 import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
-import android.util.Log
+import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +13,12 @@ import com.wonpyohong.android.cleanking.databinding.ItemStuffNormalBinding
 import com.wonpyohong.android.cleanking.hideKeyboard
 import com.wonpyohong.android.cleanking.room.stuff.Stuff
 import com.wonpyohong.android.cleanking.showKeyboard
-import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
-import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperViewHolder
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.standalone.KoinComponent
-import java.util.*
 
 
 class StuffAdapter(val lifeCycleOwner: LifecycleOwner):
-        RecyclerView.Adapter<StuffAdapter.StuffViewHolder>(), ItemTouchHelperAdapter, KoinComponent {
+        RecyclerView.Adapter<StuffAdapter.StuffViewHolder>(), KoinComponent {
 
     val viewModel: WriteStuffHistoryViewModel by viewModel(lifeCycleOwner)
 
@@ -62,42 +59,44 @@ class StuffAdapter(val lifeCycleOwner: LifecycleOwner):
 
     }
 
-    override fun onItemMove(fromPosition: Int, toPosition: Int): Boolean {
-        if (fromPosition < toPosition) {
-            for (i in fromPosition until toPosition) {
-                Collections.swap(viewModel.stuffList.value, i, i + 1)
-            }
-        } else {
-            for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(viewModel.stuffList.value, i, i - 1)
-            }
-        }
-        notifyItemMoved(fromPosition, toPosition)
-        return true
-    }
-
-    override fun onItemDismiss(position: Int) {
-    }
-
     abstract inner class StuffViewHolder(binding: ViewDataBinding) : RecyclerView.ViewHolder(binding.root) {
         abstract fun bind(stuff: Stuff?)
     }
 
     inner class StuffNormalViewHolder(private val binding: ItemStuffNormalBinding) : StuffViewHolder(binding) {
         override fun bind(stuff: Stuff?) {
-            binding.stuff = stuff
+            binding.stuff = stuff!!
             binding.viewModel = viewModel
             binding.setLifecycleOwner(lifeCycleOwner)
+            binding.rootLayout.setOnDragListener { destinationView, event ->
+                val (draggingView, draggingStuff) = event.localState as Pair<View, Stuff>
+                if (draggingStuff != stuff) {
+                    when (event.action) {
+                        DragEvent.ACTION_DRAG_ENTERED -> {
+                            stuff.setSelectedTrue()
+                        }
+
+                        DragEvent.ACTION_DRAG_EXITED -> {
+                            stuff.setSelectedFalse()
+                        }
+
+                        DragEvent.ACTION_DROP -> {
+                            stuff.setSelectedFalse()
+                            viewModel.requestMergeStuff(draggingStuff, stuff)
+                        }
+
+                        DragEvent.ACTION_DRAG_ENDED -> {
+                            stuff.setSelectedFalse()
+                            draggingView.alpha = 1f
+                        }
+                    }
+                }
+                true
+            }
         }
     }
 
-    inner class StuffAppendViewHolder(private val binding: ItemStuffAppendBinding) : StuffViewHolder(binding), ItemTouchHelperViewHolder {
-        override fun onItemSelected() {
-        }
-
-        override fun onItemCleared() {
-        }
-
+    inner class StuffAppendViewHolder(private val binding: ItemStuffAppendBinding) : StuffViewHolder(binding) {
         override fun bind(stuff: Stuff?) {
             binding.viewModel = viewModel
             binding.setLifecycleOwner(lifeCycleOwner)
@@ -105,7 +104,6 @@ class StuffAdapter(val lifeCycleOwner: LifecycleOwner):
                 view as EditText
 
                 if (hasFocus) {
-                    Log.d("HWP", "has focus")
                     view.setText("")
                     showKeyboard(view)
                 } else {
