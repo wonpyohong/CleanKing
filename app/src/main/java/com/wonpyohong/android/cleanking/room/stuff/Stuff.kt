@@ -1,13 +1,17 @@
 package com.wonpyohong.android.cleanking.room.stuff
 
 import android.arch.lifecycle.MutableLiveData
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.Index
-import android.arch.persistence.room.PrimaryKey
+import android.arch.persistence.room.*
 import android.databinding.ObservableBoolean
 
-@Entity(tableName = "stuff", indices = [Index(value = ["categoryId", "stuffName"], unique = true)])
+@Entity(tableName = "stuff", indices = [Index(value = ["categoryId", "stuffName"], unique = true)],
+        foreignKeys = arrayOf(
+                ForeignKey(entity = Category::class,
+                        parentColumns = arrayOf("categoryId"),
+                        childColumns = arrayOf("categoryId"),
+                        onDelete = ForeignKey.CASCADE
+                )
+        ))
 class Stuff(
         @PrimaryKey(autoGenerate = true)
         val id: Int,

@@ -116,12 +116,11 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
         }
 
         val stuffHistory = StuffHistory(0, LocalDateTime.now().minusHours(4).toLocalDate().toString(),
-            selectedCategory.value!!.categoryName,
-            selectedStuff.value!!.stuffName)
+            selectedStuff.value!!.id)
 
         val stuffDatabase = StuffDatabase.getInstance()
         addDisposable(Single.fromCallable {
-            val stuff = stuffList.value?.find { it.categoryId == selectedCategory.value!!.categoryId && it.stuffName == stuffHistory.stuffName}
+            val stuff = stuffList.value?.find { it.categoryId == selectedCategory.value!!.categoryId && it.id == stuffHistory.stuffId}
             stuffDatabase.beginTransaction()
             if (stuff != null) {
                 stuff.frequency++

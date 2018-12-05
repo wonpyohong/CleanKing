@@ -5,11 +5,11 @@ import io.reactivex.Flowable
 
 @Dao
 interface StuffHistoryDao {
-    @Query("SELECT * FROM stuff_history")
-    fun getAllDumpList(): Flowable<List<StuffHistory>>
+    @Query("SELECT C.id, C.date, C.stuffId, B.stuffName stuffName, A.categoryName categoryName FROM stuff_history C INNER JOIN category A, stuff B ON B.id = C.stuffId AND B.categoryId = A.categoryId")
+    fun getAllDumpList(): Flowable<List<StuffHistoryJoin>>
 
-    @Query("SELECT * FROM stuff_history WHERE date=:date")
-    fun getDayStuffList(date: String): Flowable<List<StuffHistory>>
+    @Query("SELECT C.id, C.date, C.stuffId, B.stuffName stuffName, A.categoryName categoryName FROM stuff_history C INNER JOIN category A, stuff B ON B.id = C.stuffId AND B.categoryId = A.categoryId WHERE date=:date")
+    fun getDayStuffList(date: String): Flowable<List<StuffHistoryJoin>>
 
     @Query("DELETE FROM stuff_history")
     fun clearAll()

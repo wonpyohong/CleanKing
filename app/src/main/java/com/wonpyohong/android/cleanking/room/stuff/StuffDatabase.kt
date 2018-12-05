@@ -8,7 +8,7 @@ import android.arch.persistence.room.migration.Migration
 import com.wonpyohong.android.cleanking.CleanApplication.Companion.applicationContext
 import java.util.concurrent.Executors
 
-@Database(entities = [Category::class, Stuff::class, StuffHistory::class], version = 3)
+@Database(entities = [Category::class, Stuff::class, StuffHistory::class], version = 4)
 abstract class StuffDatabase: RoomDatabase() {
     abstract fun getCategoryDao(): CategoryDao
     abstract fun getStuffDao(): StuffDao
@@ -22,7 +22,7 @@ abstract class StuffDatabase: RoomDatabase() {
                 synchronized(StuffDatabase::class) {
                     INSTANCE = Room.databaseBuilder(applicationContext, StuffDatabase::class.java, "stuff.db")
                         .addCallback(RoomDbCallback)
-                        .addMigrations(Migration1to2, Migration2to3)
+                        .addMigrations(Migration1to2, Migration2to3, Migration3to4)
                         .build()
                 }
             }
@@ -89,5 +89,44 @@ object Migration2to3: Migration(2, 3) {
         Executors.newSingleThreadScheduledExecutor().execute {
             StuffDatabase.getInstance().getStuffDao().update(*stuffList.toTypedArray())
         }
+    }
+}
+
+object Migration3to4: Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE 'stuff' RENAME TO '_stuff'")
+        database.execSQL("CREATE TABLE `stuff` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`categoryId` INTEGER NOT NULL, `stuffName` TEXT NOT NULL, " +
+                "frequency INTEGER DEFAULT 0 NOT NULL," +
+                "CONSTRAINT fk_category_stuff FOREIGN KEY(categoryId) " +
+                "REFERENCES category(categoryId) ON DELETE CASCADE)")
+        database.execSQL("INSERT INTO 'stuff' SELECT * FROM '_stuff'")
+        database.execSQL("DROP INDEX index_stuff_categoryId_stuffName")
+        database.execSQL("CREATE UNIQUE INDEX index_stuff_categoryId_stuffName ON stuff(categoryId, stuffName)")
+
+        database.execSQL("ALTER TABLE 'stuff_history' RENAME TO '_stuff_history'")
+        database.execSQL("CREATE TABLE `stuff_history` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`date` TEXT NOT NULL, `stuffId` INTEGER NOT NULL," +
+                "CONSTRAINT fk_stuff_stuff_history FOREIGN KEY(stuffId) " +
+                "REFERENCES stuff(id) ON DELETE CASCADE)")
+
+        database.execSQL("INSERT INTO 'stuff_history' SELECT C.id, C.date, B.id FROM 'category' A\n" +
+                "INNER JOIN 'stuff' B, '_stuff_history' C\n" +
+                "ON C.stuffName = B.stuffName AND C.categoryName = A.categoryName AND B.categoryId = A.categoryId\n" +
+                "ORDER BY C.id")
+
+//        val stuffList = mutableListOf<Stuff>()
+//        while (cursor.moveToNext()) {
+//            val categoryId = cursor.getInt(0)
+//            val stuffId = cursor.getInt(1)
+//            val stuffName = cursor.getString(2)
+//            val frequency = cursor.getInt(3)
+//
+//            stuffList.add(Stuff(stuffId, categoryId, stuffName, frequency))
+//        }
+//
+//        Executors.newSingleThreadScheduledExecutor().execute {
+//            StuffDatabase.getInstance().getStuffDao().update(*stuffList.toTypedArray())
+//        }
     }
 }

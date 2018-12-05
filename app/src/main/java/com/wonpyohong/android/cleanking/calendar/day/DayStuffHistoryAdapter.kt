@@ -10,12 +10,13 @@ import android.view.ViewGroup
 import com.wonpyohong.android.cleanking.R
 import com.wonpyohong.android.cleanking.databinding.ItemDayStuffHistoryBinding
 import com.wonpyohong.android.cleanking.room.stuff.StuffHistory
+import com.wonpyohong.android.cleanking.room.stuff.StuffHistoryJoin
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperAdapter
 import com.wonpyohong.android.cleanking.support.recyclerview.ItemTouchHelperViewHolder
 import kotlinx.android.extensions.LayoutContainer
 import java.util.*
 
-class DayStuffHistoryAdapter(private val context: Context, val stuffHistoryList: List<StuffHistory>):
+class DayStuffHistoryAdapter(private val context: Context, val stuffHistoryList: List<StuffHistoryJoin>):
         RecyclerView.Adapter<DayStuffHistoryAdapter.DumpViewHolder>(),
         ItemTouchHelperAdapter {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DumpViewHolder {
@@ -52,9 +53,9 @@ class DayStuffHistoryAdapter(private val context: Context, val stuffHistoryList:
 
         var selected = ObservableBoolean(false)
 
-        fun bind(stuffHistory: StuffHistory) {
+        fun bind(stuffHistoryJoin: StuffHistoryJoin) {
             val viewBinding = DataBindingUtil.bind<ItemDayStuffHistoryBinding>(containerView)
-            viewBinding?.stuffHistory = stuffHistory
+            viewBinding?.stuffHistoryJoin = stuffHistoryJoin
             viewBinding?.dumpViewHolder = this
         }
 
