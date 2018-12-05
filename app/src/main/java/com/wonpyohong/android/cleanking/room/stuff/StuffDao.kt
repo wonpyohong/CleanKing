@@ -16,6 +16,9 @@ interface StuffDao {
     @Query("DELETE FROM stuff")
     fun clearAll()
 
+    @Query("UPDATE stuff_history SET stuffId=:newStuffId WHERE stuffId=:oldStuffId")
+    fun changeStuffId(oldStuffId: Int, newStuffId: Int)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(stuff: Stuff): Long
 

@@ -82,7 +82,28 @@ class WriteStuffHistoryViewModel: BaseViewModel() {
     }
 
     fun onMergeStuffConfirmed(mergeStuff: MergeStuff) {
-        Log.d("HWP", "onMergeStuffConfirmed, ${mergeStuff}")
+        mergeStuff.parent.frequency += mergeStuff.child.frequency
+        val stuffDatabase = StuffDatabase.getInstance()
+        addDisposable(Single.fromCallable {
+                stuffDatabase.getStuffDao().update(mergeStuff.parent)
+                stuffDatabase.getStuffDao().changeStuffId(mergeStuff.child.id, mergeStuff.parent.id)
+                stuffDatabase.getStuffDao().delete(mergeStuff.child)
+
+                stuffDatabase.setTransactionSuccessful()
+                stuffDatabase.endTransaction()
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                // success
+            },
+            {
+                it.printStackTrace()
+                if (stuffDatabase.inTransaction()) {
+                    stuffDatabase.endTransaction()
+                }
+            })
+        )
     }
 
     fun addStuff() {

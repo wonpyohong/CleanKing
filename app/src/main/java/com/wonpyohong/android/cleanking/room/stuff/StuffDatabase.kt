@@ -114,19 +114,12 @@ object Migration3to4: Migration(3, 4) {
                 "INNER JOIN 'stuff' B, '_stuff_history' C\n" +
                 "ON C.stuffName = B.stuffName AND C.categoryName = A.categoryName AND B.categoryId = A.categoryId\n" +
                 "ORDER BY C.id")
+    }
+}
 
-//        val stuffList = mutableListOf<Stuff>()
-//        while (cursor.moveToNext()) {
-//            val categoryId = cursor.getInt(0)
-//            val stuffId = cursor.getInt(1)
-//            val stuffName = cursor.getString(2)
-//            val frequency = cursor.getInt(3)
-//
-//            stuffList.add(Stuff(stuffId, categoryId, stuffName, frequency))
-//        }
-//
-//        Executors.newSingleThreadScheduledExecutor().execute {
-//            StuffDatabase.getInstance().getStuffDao().update(*stuffList.toTypedArray())
-//        }
+object Migration4to5: Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP TABLE '_stuff'")
+        database.execSQL("DROP TABLE '_stuff_history'")
     }
 }
