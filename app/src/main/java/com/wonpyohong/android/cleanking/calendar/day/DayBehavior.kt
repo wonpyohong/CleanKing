@@ -38,8 +38,7 @@ class DayBehavior(context: Context, attrs: AttributeSet): BottomSheetBehavior<Vi
                 val isUpward = downY - event.y < -20
                 val isDownward = downY - event.y > 20
 
-                if ((isUpward || isDownward)
-                        && (state == STATE_COLLAPSED || downView !is DayRecyclerView)) {
+                if (state == STATE_COLLAPSED || downView !is DayRecyclerView) {
                     true
                 } else if (downView is DayRecyclerView) {
                     (isUpward && !(downView as DayRecyclerView).canItemScrollVertically(-1))
